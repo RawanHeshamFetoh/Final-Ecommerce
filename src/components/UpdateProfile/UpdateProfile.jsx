@@ -151,12 +151,21 @@ const UpdateProfile = () => {
     });
 
     const onSubmit = (values) => {
+        // run with new fun
+        // const {addresses,...updatedValue}=values
+        // const updatedValues = {
+         
+        //     ...updatedValue,
+        //     address: values.addresses[0],
+        //     profilePicture: profilePictureUpdated // Set profilePicture to the local state
+        // };
         const updatedValues = {
             ...values,
+            
             profilePicture: profilePictureUpdated // Set profilePicture to the local state
         };
 
-        console.log(values, "updated values");
+        console.log(updatedValues, "updated values");
         mutation.mutate(updatedValues,{
             onSuccess:(res)=>{
                 setProfilePicture(res.data.profilePicture)

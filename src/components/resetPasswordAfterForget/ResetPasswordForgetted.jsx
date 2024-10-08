@@ -4,13 +4,18 @@ import styles from "../../pages/Login/login.module.css"
 import resetPasswordImg from "../../assets/Reset password-bro.svg"
 import { Form, Formik } from 'formik'
 import FormController from '../formConteoller/formController'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import style from './resetPassword.module.css'
+import toast from 'react-hot-toast'
+import { useMutation } from 'react-query'
+import axios from 'axios'
 const ResetPasswordForgetted = () => {
+    const navigate = useNavigate();
     const initialValues = {
         email: "",
         newPassword: "",
-        otp: ["", "", "", "", ""],
+        confirmPassword: '',
+        otp: ["", "", "", "", "", ""],
     };
     const validationSchema = Yup.object({
         email: Yup.string().email("invalid email").required("required"),
@@ -20,25 +25,54 @@ const ResetPasswordForgetted = () => {
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
                 "invalid password"
             ),
-            otp: Yup.array().of(
-                Yup.string()
-                    .length(1, "Each digit must be 1 character")
-                    .matches(/^[0-9]$/, "Must be a number")
-                    .required("Required")
-            ).length(5, "Must be exactly 5 digits"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('newPassword'), ''], 'Passwords must match')
+            .required('Required'),
+        otp: Yup.array().of(
+            Yup.string()
+                .length(1, "Each digit must be 1 character")
+                .matches(/^[0-9]$/, "Must be a number")
+                .required("Required")
+        ).length(6, "Must be exactly 6 digits"),
 
     });
     const onSubmit = (values) => {
-        const otpString = values.otp.join('');
-        const updatedValues = {
-            ...values,  // Spread the existing values
-            otp: otpString // Update the otp field with the string
-        };
-        console.log(updatedValues)
+        // const otpString = values.otp.join('');
+        // const updatedValues = {
+        //     ...values,  // Spread the existing values
+        //     otp: otpString // Update the otp field with the string
+        // };
+        // console.log(updatedValues)
 
-        // mutation.mutate(values);
+        // mutation.mutate(updatedValues);
+        const otpString = values.otp.join('');
+
+        // Create a new object with the updated otp string and exclude confirmPassword
+        const { confirmPassword, ...updatedValues } = values;
+
+        updatedValues.otp = otpString; // Update the otp field with the string
+
+        console.log(updatedValues); // Output the updated values
+
+        // Now perform mutation or API call with updatedValues
+        mutation.mutate(updatedValues);
     };
-    // const arrayOfUndefined = new Array(5).fill(undefined);
+    const sendOtp = async (data) => {
+        const reponse = await axios.post("http://localhost:3000/api/v1/auth/reset-password", data)
+        return reponse.data
+    }
+    const mutation = useMutation(sendOtp, {
+        onSuccess: (res) => {
+            toast.success("password Updated successfully")
+            console.log(res)
+            navigate("/login")
+
+        },
+        onError: (err) => {
+            toast.error("there is some thing wrong")
+        },
+    })
+
     return (
         <div className={`container my-5  ${styles.formContainer}`}>
 
@@ -71,19 +105,27 @@ const ResetPasswordForgetted = () => {
                                     className={styles.input}
                                     divStyle={styles.formControl}
                                 />
+                                <FormController
+                                    control="input"
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    name="confirmPassword"
+                                    className={styles.input}
+                                    divStyle={styles.formControl}
+                                />
                                 <label htmlFor="otp1" className={style.label}>otp</label>
                                 <div className={style.otp}>
-                                {
-                                    initialValues.otp.map((value,index) => (
-                                        <FormController
-                                            control="input"
-                                            type="text"
-                                            id="otp1"
-                                            name={`otp[${index}]`}
-                                            className={styles.input}
-                                            divStyle={styles.formControl}
-                                        />
-                                    ))}
+                                    {
+                                        initialValues.otp.map((value, index) => (
+                                            <FormController
+                                                control="input"
+                                                type="text"
+                                                id="otp1"
+                                                name={`otp[${index}]`}
+                                                className={styles.input}
+                                                divStyle={styles.formControl}
+                                            />
+                                        ))}
                                 </div>
                                 {/* <FormController
                                     control="input"
@@ -95,7 +137,7 @@ const ResetPasswordForgetted = () => {
                                 /> */}
 
                                 <div className={styles.submitContainer}>
-                                    <button type="submit" className={styles.submit} disabled={!formik.isValid}>login</button>
+                                    <button type="submit" className={styles.submit} disabled={!formik.isValid}>change password</button>
                                 </div>
                             </Form>
                         );

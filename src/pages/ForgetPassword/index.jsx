@@ -4,8 +4,13 @@ import FormController from "../../components/formConteoller/formController";
 import * as Yup from "yup";
 import styles from '../Login/login.module.css'
 import ForgetPasswordImg from '../../assets/Forgot password-bro.svg'
+import axios from "axios";
+import { useMutation } from "react-query";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ForgetPassword = () => {
+    const navigate = useNavigate('')
     const initialValues = {
         email: "",
     };
@@ -15,8 +20,23 @@ const ForgetPassword = () => {
             .email("invalid email"),
     });
     const onSubmit = (values) => {
+        mutation.mutate(values)
         console.log(values);
     };
+    const sendEmail=async(email)=>{
+        const reponse= await axios.post("http://localhost:3000/api/v1/auth/send-otp", email)
+        return reponse.data
+    }
+    const mutation = useMutation(sendEmail,{
+        onSuccess:()=>{
+            toast.success("Please Ckeck your gmail ")
+            navigate("/forget-password-reset")
+            
+        },
+        onError:(err)=>{
+            toast.error("Please Enter a Valid Email")
+        },
+    })
 
     return (
         <div className={`container my-5  ${styles.formContainer}`}>
