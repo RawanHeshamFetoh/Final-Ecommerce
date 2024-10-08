@@ -14,12 +14,12 @@ import bcrypt from "bcryptjs-react";
 const ResetPassword = () => {
     const navigate = useNavigate()
     const initialValues = {
-        oldPassword: '',
+        currentPassword: '',
         password: '',
-        confirmPassword: '',
+        passwordConfirm: '',
     }
     const validationSchema = Yup.object({
-        oldPassword: Yup.string()
+        currentPassword: Yup.string()
             .required("required")
             .matches(
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
@@ -31,18 +31,20 @@ const ResetPassword = () => {
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
                 "invalid password"
             ),
-        confirmPassword: Yup.string()
+        passwordConfirm: Yup.string()
             .oneOf([Yup.ref('password'), ''], 'Passwords must match')
             .required('Required')
     })
     const onSubmit = async (values) => {
         console.log(userDataFetchPassword)
-        // if(values.oldPassword === userDataFetchPassword){
-            const match = await bcrypt.compare(values.oldPassword, userDataFetchPassword); // Assuming userDataFetch contains the hashed password
+        // if(values.currentPassword === userDataFetchPassword){
+            const match = await bcrypt.compare(values.currentPassword, userDataFetchPassword); // Assuming userDataFetch contains the hashed password
             if(match){
 
-                const payload = { password: values.password };
-                mutation.mutate(payload)
+                // const payload = { password: values.password };
+                // mutation.mutate(payload)
+                console.log(values,"resetPassword")
+                mutation.mutate(values)
             }else{
                 toast.error("Old password is not correct")
             }
@@ -98,7 +100,7 @@ const ResetPassword = () => {
                                     control="input"
                                     type="password"
                                     placeholder="Enter your password"
-                                    name="oldPassword"
+                                    name="currentPassword"
                                     className={styles.input}
                                     divStyle={styles.formControl}
                                 />
@@ -114,11 +116,11 @@ const ResetPassword = () => {
                                     control="input"
                                     type="password"
                                     placeholder="Enter your password"
-                                    name="confirmPassword"
+                                    name="passwordConfirm"
                                     className={styles.input}
                                     divStyle={styles.formControl}
                                 />
-                                <button type="submit" className={styles.submit} disabled={!formik.isValid}>login</button>
+                                <button type="submit" className={styles.submit} disabled={!formik.isValid}>update password</button>
 
                             </Form>
                         )
