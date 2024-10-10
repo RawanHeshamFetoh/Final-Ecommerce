@@ -1,9 +1,30 @@
 import React from 'react'
 import styles from '../productCard/productCard.module.css'
 import style from './productCardSeller.module.css'
+import axios from 'axios'
+import { useMutation } from 'react-query'
+import toast from 'react-hot-toast'
 const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfterDisc, id }) => {
     console.log("price af",priceAfterDisc)
     console.log("price ",price)
+    const deleteProduct= async()=>{
+        return axios.delete(`http://localhost:3000/api/v1/products/${id}`,{
+            withCredentials: true
+        })
+    }
+    const mutation=useMutation(deleteProduct,{
+        onSuccess:()=>{
+            toast.success("Product deleted successfully!");
+            window.location.reload();
+        },
+        onError:(err)=>{
+            toast.error("Failed to delete Product!")
+            console.log(err)
+        }
+    })
+    const handleDeleteProject = ()=>{
+        mutation.mutate()
+    }
     return (
 
 
@@ -17,7 +38,7 @@ const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfte
                         <div className={style.productsBtn}>
                             <button>update  <i class="fa-solid fa-arrow-right"></i></button>
                             <button>view product <i class="fa-regular fa-eye"></i></button>
-                            <button>delet product <i class="fa-regular fa-eye"></i></button>
+                            <button onClick={handleDeleteProject}>delet product <i class="fa-regular fa-eye"></i></button>
                         </div>
                     </div>
                 </div>
@@ -43,39 +64,3 @@ const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfte
 }
 
 export default ProductCardSeller
-// import React from 'react'
-// import styles from '../productCard/productCard.module.css'
-// const ProductCardSeller = ({ imageCover, title, price, ratingsAverage ,priceAfterDisc ,id    }) => {
-//     return (
-//         <div className={styles.productCard}>
-//             <div className={styles.productCardImg}>
-//                 <img src={imageCover} alt={title} />
-//                 <div className={styles.productCardImgLayout}>
-//                     <div className={styles.layout}></div>
-//                     <i className={`fa-regular fa-heart ${styles.heart}`}></i>
-//                     <div className={styles.productsBtn}>
-//                     <button>add to cart  <i class="fa-solid fa-arrow-right"></i></button>
-//                     <button>view product <i class="fa-regular fa-eye"></i></button>
-//                     </div>
-//                 </div>
-//             </div>
-//                 <div className={styles.productCardRate}>
-//                     <i className={`fa-solid fa-star ${ratingsAverage >= 1 ? styles.active : ''}`}></i>
-//                     <i className={`fa-solid fa-star ${ratingsAverage >= 2 ? styles.active : ''}`}></i>
-//                     <i className={`fa-solid fa-star ${ratingsAverage >= 3 ? styles.active : ''}`}></i>
-//                     <i className={`fa-solid fa-star ${ratingsAverage >= 4 ? styles.active : ''}`}></i>
-//                     <i className={`fa-solid fa-star ${ratingsAverage >= 5 ? styles.active : ''}`}></i>
-//                 </div>
-//                 <p className={styles.productTitle}>{title}</p>
-//                 <div className={styles.productPrice}>
-//                     {
-//                         (price !== priceAfterDisc)&&(<p>{priceAfterDisc} $</p>)
-//                     }
-//                     <p>{price}$</p>
-//                 </div>
-//         </div>
-//     )
-// }
-
-// export default ProductCardSeller
-

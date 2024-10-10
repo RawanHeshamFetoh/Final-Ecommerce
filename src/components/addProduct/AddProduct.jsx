@@ -19,7 +19,9 @@ const AddProduct = () => {
     const [tempSize, setTempSize] = useState('')
     const [tempSubCategory, setTempSubCategory] = useState('')
     const [imageCoverCopy, setImageCover] = useState("");
+    const [imageCoverCopyShow, setImageCovershow] = useState("");
     const [multiImagesCopy, setImages] = useState([]);
+    const [multiImagesCopyShow, setImagesShow] = useState([]);
     const userId = Cookies.get('userId')
     const navigate = useNavigate()
     const initialValues = {
@@ -64,7 +66,8 @@ const AddProduct = () => {
                 imageCover: imageCoverCopy,
                 subcategories: values.subCategories,
                 // images:[multiImagesCopy[0],multiImagesCopy[1]],
-                images:[...multiImagesCopy],
+                images:multiImagesCopy[0],
+                // images:[...multiImagesCopy],
                 sellerId: userId
             }
             console.log(updatedValue);
@@ -93,7 +96,6 @@ const AddProduct = () => {
             toast.error("Failed to add product!");
         },
     })
-
 
     //get all categories
     const getAllCategoires = async () => {
@@ -180,6 +182,7 @@ const AddProduct = () => {
 
                             reader.onloadend = () => {
                                 // initialValues.imageCover = imageCoverCopy
+                                setImageCovershow(reader.result)
                                 console.log("imageCover", imageCoverCopy)
 
                             };
@@ -190,6 +193,7 @@ const AddProduct = () => {
 
                     const handleRemoveImageCover = () => {
                         setImageCover(null)
+                        setImageCovershow(null)
                     }
                     // handle Images 
                     const handleImagesChange = (event) => {
@@ -197,11 +201,12 @@ const AddProduct = () => {
                         const file = event.target.files[0];
                         if (file) {
                             const reader = new FileReader();
+                            
                             setImages(prevImages => [...prevImages, file])
-
                             reader.onloadend = () => {
-                                if (reader.result && !multiImagesCopy.includes(reader.result) && multiImagesCopy.length <= 2) {
-                                }
+                                // if (reader.result && !multiImagesCopy.includes(reader.result) && multiImagesCopy.length <= 2 ) {
+                                    setImagesShow(prevImages => [...prevImages, reader.result])
+                                // }
                             };
                             reader.readAsDataURL(file);
                         }
@@ -218,10 +223,11 @@ const AddProduct = () => {
                     //     const files = Array.from(event.target.files); // Convert FileList to an array
                     //     setImages(files); // Set array of files to state
                     // };
-                    const handleRemoveImage = (imageToRemove) => {
-                        setImages(prevImages => prevImages.filter(image => image !== imageToRemove));
-                        // console.log(imageToRemove)
-                    };
+                    // const handleRemoveImage = (imageToRemove) => {
+                    //     setImages(prevImages => prevImages.filter(image => image !== imageToRemove));
+                    //     setImagesShow(prevImages => prevImages.filter(image => image !== imageToRemove));
+                    //     // console.log(imageToRemove)
+                    // };
                     const chooseCategory = (e) => {
                         console.log(e.target.value)
                         console.log(e.target)
@@ -229,7 +235,6 @@ const AddProduct = () => {
                         // initialValues.category=e.target.key
                         setCategoryId(e.target.value)
                     }
-
                     return (
                         <form onSubmit={handleSubmit} className={style.formAddProduct}>
                             <div className={style.formAddProductContainer}>
@@ -384,8 +389,8 @@ const AddProduct = () => {
                                             <div
                                                 onDoubleClick={handleRemoveImageCover}
                                                 style={{
-                                                    display: initialValues.imageCover ? 'block' : 'none',
-                                                    backgroundImage: initialValues.imageCover ? `url(${initialValues.imageCover})` : 'none',
+                                                    display: imageCoverCopyShow? 'block' : 'none',
+                                                    backgroundImage: imageCoverCopyShow ? `url(${imageCoverCopyShow})` : 'none',
                                                     // display: imageCoverCopy ? 'block' : 'none',
                                                     // backgroundImage: imageCoverCopy ? `url(${imageCoverCopy})` : 'none',
                                                     width: '75%',
@@ -418,26 +423,28 @@ const AddProduct = () => {
                                                 />
                                             </div>
                                             <div style={{
-                                                display: multiImagesCopy.length > 0 ? 'flex' : 'none',
+                                                display: multiImagesCopyShow.length > 0 ? 'flex' : 'none',
+                                                display:"flex",
                                                 width: '100%',
                                                 height: '150px',
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
-                                                marginBottom: "20px"
+                                                marginBottom: "20px",
+                                                
                                             }}>
                                                 {
-                                                    multiImagesCopy.map((image, index) => (
+                                                    // console.log(multiImagesCopyShow,"mmmmmm")
+                                                    multiImagesCopyShow.map((image, index) => (
                                                         <div
-                                                            onDoubleClick={() => handleRemoveImage(image)}
+                                                            key={index}
+                                                            // onDoubleClick={() => handleRemoveImage(image)}
                                                             style={{
-
-                                                                backgroundImage: image ? `url(${image})` : 'none',
+                                                                backgroundImage: multiImagesCopyShow ? `url(${image})` : 'none',
                                                                 width: '45%',
                                                                 height: '150px',
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center',
-
-
+                                                                
                                                             }}
                                                         ></div>
                                                     ))

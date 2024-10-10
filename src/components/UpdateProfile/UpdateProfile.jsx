@@ -124,11 +124,11 @@ const UpdateProfile = () => {
                     city: Yup.string(),
                     street: Yup.string(),
                     zipcode: Yup.number()
-                        .typeError('Invalid ZIP code')
+                        .typeError('Invalid ZIP code , Zip code must be 5 number')
                         .positive('Invalid ZIP code')
                         .integer('Invalid ZIP code')
-                        .min(10000, 'Invalid ZIP code')
-                        .max(99999, 'Invalid ZIP code')
+                        .min(10000, ' Zip code must be 5 number')
+                        .max(99999, ' Zip code must be 5 number')
 
                 })
             )

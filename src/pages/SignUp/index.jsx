@@ -92,7 +92,7 @@ const SignUp = () => {
         },
         onError: (error) => {
             // alert(error.message)
-            toast.error("Sorry, there is some thing wrong ,please try again")
+            toast.error("Sorry" +error.response.data.errors[0].msg)
             // console.log("error")
         }
     })

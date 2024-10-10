@@ -45,6 +45,9 @@ const SideBar = () => {
         <div className={styles.sideBar}>
             <ul>
                 <li>
+                    <NavLink className={({ isActive }) => `${isActive && !isOnProfileSubPath ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/`}> <i class="fa-solid fa-house"></i> home</NavLink>
+                </li>
+                <li>
                     <NavLink className={({ isActive }) => `${isActive && !isOnProfileSubPath ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}`}> <i class="fa-solid fa-user"></i> my accounts</NavLink>
                 </li>
                 {

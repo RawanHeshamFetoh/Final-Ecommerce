@@ -43,6 +43,7 @@
     font-size: 12px;
     padding:7px 10px;
     margin-right: 10px;
+    margin-bottom:10px ;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -51,7 +52,7 @@
 }
 .productsBtn{
     position: relative;
-    bottom: 20%;
+    bottom: 30%;
     left: 5%;
 }
 .productsBtn button:hover{

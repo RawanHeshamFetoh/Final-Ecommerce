@@ -74,7 +74,9 @@ const Login = () => {
     const auth = getAuth(app)
     const googleProvider = new GoogleAuthProvider()
     const userLoginWithGoogle = async (user) => {
-        const response = await axios.post("http://localhost:3000/api/v1/auth/auth/google", user)
+        const response = await axios.post("http://localhost:3000/api/v1/auth/auth/google", user,{
+            withCredentials: true, 
+        })
         return response.data
     }
     const mutationSignUpWithGoogle = useMutation(userLoginWithGoogle, {
@@ -100,16 +102,12 @@ const Login = () => {
         },
     });
 
-  
-
     const signInwithGoogle = () => {
         signInWithPopup(auth, googleProvider).then((result) => {
             const userFromGoogle = {
                 email: result.user.email,
                 username: result.user.displayName,
                 profilePicture: result.user.photoURL,
-                
-
             }
             console.log(result)
             mutationSignUpWithGoogle.mutate(userFromGoogle)
