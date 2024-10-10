@@ -9,16 +9,16 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 const queryClient = new QueryClient();
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-      <Router>
-        <AppRouter />
-      </Router>
-      <Toaster position='top center'/>
-    </Provider>
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            {/* <Provider store={store}> */}
+                <Router>
+                    <AppRouter />
+                </Router>
+                <Toaster position='top center' />
+            {/* </Provider> */}
+        </QueryClientProvider>
+    );
 }
 
 export default App;
