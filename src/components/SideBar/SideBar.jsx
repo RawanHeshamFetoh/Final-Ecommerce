@@ -8,14 +8,16 @@ import toast from 'react-hot-toast'
 const SideBar = () => {
     const location = useLocation();
     //  const profileSubPaths = ['/profile/reset-password','/profile/add-product'];
-    const userId= Cookies.get('userId')
+    const userId = Cookies.get('userId')
+    const userRole = Cookies.get('role')
+    const loggedWith = Cookies.get('logedWith')
     console.log(userId)
-    const profileSubPaths = [`/profile/${userId}/reset-password`, `/profile/${userId}/add-product`];
+    const profileSubPaths = [`/profile/${userId}/reset-password`, `/profile/${userId}/add-product`, `/profile/${userId}/seller-products`];
     const isOnProfileSubPath = profileSubPaths.some(subPath => location.pathname.includes(subPath));
-    const navigate= useNavigate()
-    const logOutUser = async()=>{
-        const response = await axios.get("http://localhost:3000/api/v1/auth/sign-out",{
-            withCredentials:true
+    const navigate = useNavigate()
+    const logOutUser = async () => {
+        const response = await axios.get("http://localhost:3000/api/v1/auth/sign-out", {
+            withCredentials: true
         })
         return response.data
     }
@@ -24,18 +26,18 @@ const SideBar = () => {
             toast.success("log out successfully!");
             Cookies.remove('userId')
             Cookies.remove('access_token');
+            Cookies.remove('role');
             navigate("/login")
             console.log(res)
 
-            // Optionally, redirect the user or perform any other actions here
         },
         onError: (error) => {
             toast.error("There is some thing wrong. Please try again.");
             console.error(error.message);
         }
     });
-    const handlelogOut=()=>{
-            mutation.mutate();
+    const handlelogOut = () => {
+        mutation.mutate();
         console.log("gggggggggggggggg")
         // window.location.reload()
     }
@@ -43,23 +45,32 @@ const SideBar = () => {
         <div className={styles.sideBar}>
             <ul>
                 <li>
-                    <NavLink className={({ isActive }) => `${isActive && !isOnProfileSubPath ? styles.navLinkActive : ''} ${styles.navLink}`}  to={`/profile/${userId}`}> <i class="fa-solid fa-user"></i> my accounts</NavLink>
+                    <NavLink className={({ isActive }) => `${isActive && !isOnProfileSubPath ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}`}> <i class="fa-solid fa-user"></i> my accounts</NavLink>
                 </li>
-                <li>
-                    <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`}  to={`/profile/${userId}/reset-password`}> <i class="fa-solid fa-lock"></i> reset password</NavLink>
-                </li>
+                {
+                    !loggedWith && (
+
+                        <li>
+                            <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/reset-password`}> <i class="fa-solid fa-lock"></i> reset password</NavLink>
+                        </li>
+                    )
+                }
                 <li>
                     <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-truck-fast"></i> orders</NavLink>
                 </li>
-                <li>
-                    <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-chart-line"></i> dashboard  </NavLink>
-                </li>
-                <li>
-                    <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to='/profile/add-product'><i class="fa-solid fa-plus"></i> add products</NavLink>
-                </li>
-                <li>
-                    <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-cube"></i> products</NavLink>
-                </li>
+                {userRole ? (
+                    <>
+                        <li>
+                            <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-chart-line"></i> dashboard  </NavLink>
+                        </li>
+                        <li>
+                            <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/add-product`}><i class="fa-solid fa-plus"></i> add products</NavLink>
+                        </li>
+                        <li>
+                            <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/seller-products`}><i class="fa-solid fa-cube"></i> products</NavLink>
+                        </li>
+                    </>
+                ) : ""}
                 <li>
                     <NavLink className={`${styles.navLink}`} onClick={handlelogOut}><i class="fa-solid fa-arrow-right-from-bracket"></i> logout</NavLink>
 

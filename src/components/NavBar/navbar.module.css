@@ -200,6 +200,25 @@
     font-weight: 500;
     margin-bottom: 5px;
 }
+
+.loginBtns{
+    color: #f46f46 ;
+    border: 1px solid #f46f46;
+    background-color: white;
+    border-radius: 5px;
+
+    padding: 2px 7px;
+    margin-left: 10px;
+    font-size: 12px;
+    text-decoration: none;
+}
+.loginBtns:hover{
+    background-color: #f46f46;
+    color: white;
+    border-radius: 5px;
+    padding: 0px 7px;
+
+}
 .callText p:last-of-type{
     font-size: 12px;
 }

@@ -1,11 +1,11 @@
 import React from 'react'
 import styles from './navbar.module.css'
-import {  NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 const NavBar = () => {
     // const userId = useSelector((state) => state.user.userId);
-    const userId= Cookies.get('userId')
+    const userId = Cookies.get('userId')
     return (
         <div className={styles.nav}>
             <div className={styles.firstNav}>
@@ -41,21 +41,28 @@ const NavBar = () => {
                             <input type="text" name="search" id="search" placeholder='search your product' />
                         </div>
                         <button>search</button>
-                        <div className={`${styles.flexContainer} ${styles.navIcon}`}>
-                            <div><NavLink to={`/profile/${userId}`}> <i className="fa-regular fa-user"></i> </NavLink></div>
-                            <div className='position-relative'>
-                                <i className="fa-regular fa-heart"></i>
-                                <span className="position-absolute top-0 translate-middle bg-danger  rounded-circle">
-                                    <span >10</span>
-                                </span>
+                        {userId ?
+                            (<div className={`${styles.flexContainer} ${styles.navIcon}`}>
+                                <div><NavLink to={`/profile/${userId}`}> <i className="fa-regular fa-user"></i> </NavLink></div>
+                                <div className='position-relative'>
+                                    <i className="fa-regular fa-heart"></i>
+                                    <span className="position-absolute top-0 translate-middle bg-danger  rounded-circle">
+                                        <span >10</span>
+                                    </span>
+                                </div>
+                                <div className='position-relative'>
+                                    <i className="fa-solid fa-shopping-cart "></i>
+                                    <span className="position-absolute top-0  translate-middle bg-danger  rounded-circle">
+                                        <span >10</span>
+                                    </span>
+                                </div>
+                            </div>) :
+                            (<div className={`${styles.flexContainer} ${styles.navIcon}`}>
+                                <div><NavLink to={`/login`} className={styles.loginBtns}> login </NavLink></div>
+                                <div><NavLink to={`/signUp`} className={styles.loginBtns}> sign up </NavLink></div>
                             </div>
-                            <div className='position-relative'>
-                                <i className="fa-solid fa-shopping-cart "></i>
-                                <span className="position-absolute top-0  translate-middle bg-danger  rounded-circle">
-                                    <span >10</span>
-                                </span>
-                            </div>
-                        </div>
+                            )
+                        }
                     </div>
                 </div>
             </div>
@@ -96,7 +103,7 @@ const NavBar = () => {
                                     to="/contact-us"
                                 >
                                     Contact Us
-                                </NavLink> 
+                                </NavLink>
                             </li>
                         </ul>
                         <div className={`${styles.call} ${styles.flexContainer}`}>

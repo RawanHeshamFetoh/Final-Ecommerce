@@ -46,6 +46,14 @@ const Login = () => {
             console.log("Login successful:", data);
             dispatch(setUserId(data._id))
             dispatch(setUserData(data))
+            if(data.role ==="seller"){
+                Cookies.set("role","seller",
+                    {
+                        expires: 4,
+                        path: '/'
+                    }
+                )
+            }
             Cookies.set("userId", data._id, {
                 expires: 4,
                 path: '/'})
@@ -73,6 +81,18 @@ const Login = () => {
         onSuccess: (data) => {
             navigate("/")
             console.log("Login successful:", data);
+            console.log(data)
+            dispatch(setUserId(data._id))
+            dispatch(setUserData(data))
+            
+            Cookies.set("userId", data._id, {
+                expires: 4,
+                path: '/'})
+                Cookies.set("logedWith","google",{
+                    expires: 4,
+                    path: '/'
+                })
+                
             toast.success("Login Successfully")
         },
         onError: (error) => {

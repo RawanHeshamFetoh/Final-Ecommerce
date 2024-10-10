@@ -47,7 +47,7 @@ const SignUp = () => {
         email: "",
         username: "",
         password: "",
-        confirmPassword: "",
+        passwordConfirm: "",
         addresses: [{
             country: 'Egypt',
             city: '',
@@ -65,18 +65,18 @@ const SignUp = () => {
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
                 "invalid password"
             ),
-        confirmPassword: Yup.string()
+        passwordConfirm: Yup.string()
             .oneOf([Yup.ref('password'), ''], 'Passwords must match')
             .required('Required'),
         // addresses:Yup.string().required("required"),
         addresses: Yup.array()
-        .of(
-            Yup.object({
-                country: Yup.string(),
-                city: Yup.string().required("required"),
-                    
-            })
-        )
+            .of(
+                Yup.object({
+                    country: Yup.string(),
+                    city: Yup.string().required("required"),
+
+                })
+            )
         ,
         role: Yup.string().required("required").oneOf(["seller", "user"], "Role must be either 'admin' or 'user'")
     });
@@ -98,8 +98,15 @@ const SignUp = () => {
     })
     const onSubmit = (values) => {
         // console.log(values); 
-        const { confirmPassword, ...dataToSubmit } = values;
-        mutation.mutate(dataToSubmit);
+        // const { passwordConfirm, ...dataToSubmit } = values;
+        // mutation.mutate(dataToSubmit);
+        const { addresses, ...rest } = values; // Destructure addresses and the rest of the properties
+        const newValues = {
+            ...rest,
+            address: addresses[0], // Set address to the first address
+        };
+        console.log(newValues);
+        mutation.mutate(newValues);
 
     };
 
@@ -156,7 +163,7 @@ const SignUp = () => {
                                     control="input"
                                     type="password"
                                     placeholder="confirm Password"
-                                    name="confirmPassword"
+                                    name="passwordConfirm"
                                     className={styles.input}
                                     divStyle={styles.formControl}
                                 />

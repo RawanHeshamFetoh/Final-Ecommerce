@@ -12,6 +12,7 @@ import UpdateProfile from '../components/UpdateProfile/UpdateProfile'
 import ResetPassword from '../components/resetPassword/ResetPassword'
 import AddProduct from '../components/addProduct/AddProduct'
 import ResetPasswordForgetted from '../components/resetPasswordAfterForget/ResetPasswordForgetted'
+import SellerProducts from '../components/SellerProducts/SellerProducts'
 
 const AppRouter = () => {
     const location = useLocation();
@@ -33,6 +34,7 @@ const AppRouter = () => {
                     <Route index element={<UpdateProfile/>}/>
                     <Route path="reset-password" element={<ResetPassword/>}/>
                     <Route path="add-product" element={<AddProduct/>}/>
+                    <Route path="seller-products" element={<SellerProducts/>}/>
                 </Route>
                 <Route path="*" element={<p>not found</p>} />
             </Routes>

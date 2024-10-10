@@ -17,7 +17,8 @@ import { useNavigate } from 'react-router-dom'
 const UpdateProfile = () => {
     // const userData = useSelector((state) => state.user.userData);
     const userC = Cookies.get('userId')
-    console.log(userC)
+    const logwith = Cookies.get('logedWith')
+    console.log(userC,"mgkfm")
 
     const [profilePicture, setProfilePicture] = useState(defaultImage);
     const [profilePictureUpdated, setProfilePictureUpdated] = useState(defaultImage);
@@ -70,14 +71,17 @@ const UpdateProfile = () => {
             if (res.data.profilePicture) {
                 setProfilePicture(res.data.profilePicture)
             }
+            console.log(res.data)
         },
-        onError: (err) => {
-            navigate("/login")
-            toast.error("Please Login First ")
-        }
+        // onError: (err) => {
+        //     navigate("/login")
+        //     toast.error("Please Login First ")
+        // }
     });
 
+ 
 
+    
 
 
 
