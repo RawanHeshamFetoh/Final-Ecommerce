@@ -4,7 +4,7 @@ const ProductCard = ({ img, title, price, rate }) => {
     return (
         <div className={styles.productCard}>
             <div className={styles.productCardImg}>
-                <img src={img} alt={title} style={{width:"100%"}}/>
+                <img src={img} alt={title} />
                 <div className={styles.productCardImgLayout}>
                     <div className={styles.layout}></div>
                     <i className={`fa-regular fa-heart ${styles.heart}`}></i>
