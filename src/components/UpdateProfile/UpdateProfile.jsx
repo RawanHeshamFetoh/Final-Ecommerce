@@ -68,6 +68,7 @@ const UpdateProfile = () => {
      useQuery('get-user', getUser, {
         onSuccess: (res) => {
             setUserDataFetch(res.data)
+            console.log(res.data)
             if (res.data.profilePicture) {
                 setProfilePicture(res.data.profilePicture)
             }
@@ -92,7 +93,7 @@ const UpdateProfile = () => {
         profilePicture: "",
         addresses: [
             {
-                country: 'Egypt', // Default value
+                country: 'Egypt', 
                 city: userDataFetch.addresses[0]?.city || '',
                 street: userDataFetch.addresses[0]?.street || '',
                 zipcode: userDataFetch.addresses[0]?.zipcode || ''
@@ -129,7 +130,6 @@ const UpdateProfile = () => {
                         .integer('Invalid ZIP code')
                         .min(10000, ' Zip code must be 5 number')
                         .max(99999, ' Zip code must be 5 number')
-
                 })
             )
             .min(1, 'At least one address is required'),
@@ -183,13 +183,22 @@ const UpdateProfile = () => {
         const file = event.target.files[0];
         // console.log(file)
         if (file) {
+            const maxSize = 1024 * 1024 * 1; // 5MB
+
+        if (file.size > maxSize) {
+            toast.error('File size exceeds 5MB limit.');
+            
+        }else{
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 // setProfilePicture(reader.result); // Set the uploaded image
                 setProfilePictureUpdated(reader.result)
+                console.log(reader.result)
             };
             // console.log(profilePicture,"prrrrrrrrr")
             reader.readAsDataURL(file); // Read the file as a data URL
+        }
         }
     };
 

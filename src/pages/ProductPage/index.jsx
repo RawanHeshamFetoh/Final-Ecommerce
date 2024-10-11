@@ -42,9 +42,6 @@ const ProductPage = () => {
                 <ProductSlider products={products} />
             </div> */}
 
-
-
-
             <div className="row img-fluid">
                 <div className={`container ${styles.productsCollection}`}>
                     {products.map(

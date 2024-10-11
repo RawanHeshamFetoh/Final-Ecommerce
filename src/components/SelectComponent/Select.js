@@ -9,7 +9,8 @@ function Select(props) {
         <div className={divStyle}>
             <Field as='select' name={name} id={name} {...rest}  className={` ${selectClass}`}>
                 {options.map(option => (
-                    <option key={option.value} value={option.value} className={optionClass}>
+                    
+                    <option key={option.value} value={option.value}   className={optionClass}>
                         {option.key}
                     </option>
                 ))}

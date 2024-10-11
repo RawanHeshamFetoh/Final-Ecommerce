@@ -1,30 +1,77 @@
 
 
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import style from './addProduct.module.css';
+import style from '../addProduct/addProduct.module.css';
 import styles from '../../pages/Login/login.module.css';
 import FormController from '../formConteoller/formController';
 import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
-const AddProduct = () => {
+import { useNavigate, useParams } from 'react-router-dom';
+import { data } from 'jquery';
+const UpdateProduct = () => {
     const [mainCategories, setMainCategories] = useState([]);
     const [subCategoriesfe, setSubCategories] = useState([]);
     const [categoryId, setCategoryId] = useState('')
     const [tempColor, setTempColor] = useState('')
     const [tempSize, setTempSize] = useState('')
-    const [tempSubCategory, setTempSubCategory] = useState('')
     const [imageCoverCopy, setImageCover] = useState("");
     const [imageCoverCopyShow, setImageCovershow] = useState("");
     const [multiImagesCopy, setImages] = useState([]);
     const [multiImagesCopyShow, setImagesShow] = useState([]);
     const userId = Cookies.get('userId')
+    const [productData, setProductData] = useState()
     const navigate = useNavigate()
-    const initialValues = {
+
+
+    const { productId } = useParams()
+    const fetchProductData = async () => {
+        const response = await axios.get(`http://localhost:3000/api/v1/products/${productId}`, {
+            withCredentials: true,
+        });
+        return response.data;
+    }
+    const { data: fetchedData } = useQuery('fetch-product-data', fetchProductData, {
+        onSuccess: (res) => {
+            setProductData(res.data);
+            // setImageCover(res.data.imageCover)
+            // setImageCovershow(res.data.imageCover)
+            // setImages(res.data.images)
+            // setImagesShow(res.data.images)
+            console.log(res.data, "productData")
+
+
+        }
+    })
+
+    useEffect(() => {
+        if (productData) {
+            setImageCover(productData.imageCover)
+            setImageCovershow(productData.imageCover)
+            setImages(productData.images)
+            setImagesShow(productData.images)
+
+        }
+    }, [productData])
+
+    const initialValues = productData ? {
+        title: productData.title || '',
+        description: productData.description || "",
+        price: productData.price || "",
+        priceAfterDisc: productData.priceAfterDisc || "",
+        discount: productData.discount || "",
+        colors: productData.colors || "",
+        size: productData.size || "",
+        imageCover: "",
+        images: [],
+        stock: productData.stock || "",
+        category: categoryId || (productData?.category?.name || ""),
+        subcategories: productData.subcategories || "",
+        brand: productData.brand || "",
+    } : {
         title: '',
         description: "",
         price: "",
@@ -38,8 +85,7 @@ const AddProduct = () => {
         category: "",
         subcategories: [],
         brand: "",
-
-    };
+    }
 
     const validationSchema = Yup.object({
         title: Yup.string().required("Required").min(3, "Invalid Product name").max(100, "Invalid Product name"),
@@ -51,49 +97,52 @@ const AddProduct = () => {
         images: Yup.array().of(Yup.mixed()).max(2),
         stock: Yup.number().required("Required"),
         category: Yup.string().required("Required"),
-        subCategories: Yup.array().required("Required").min(1),
+        subcategories: Yup.array().required("Required").min(1),
         brand: Yup.string(),
         size: Yup.array().of(Yup.string().oneOf(['sm', 'md', 'lg', 'xl'], "invalid")),
         colors: Yup.array().of(Yup.string()),
     });
 
+
     const onSubmit = (values) => {
         if (imageCoverCopy && userId) {
             // if( userId){
-            // console.log("object", values.category)
+            // if(!values.subCategories){
+            //     values.subCategories = productData.subcategories
+            // }
+
             const updatedValue = {
                 ...values,
                 imageCover: imageCoverCopy,
-                subcategories: values.subCategories,
+                // subcategories: values.subCategories,
                 // images:[multiImagesCopy[0],multiImagesCopy[1]],
-                images:multiImagesCopy[0],
+                images: multiImagesCopy[0],
                 // images:[...multiImagesCopy],
                 sellerId: userId
             }
-            console.log(updatedValue);
-            console.log(updatedValue.category)
-            mutation.mutate(updatedValue)
 
+            console.log(updatedValue, "updddddated");
+            mutation.mutate(updatedValue)
         } else {
             toast.error("image cover required")
         }
     };
-    const addProduct = async (product) => {
-        let response = await axios.post("http://localhost:3000/api/v1/products/", product, {
+    const updateProduct = async (product) => {
+        let response = await axios.put(`http://localhost:3000/api/v1/products/${productId}`, product, {
             withCredentials: true,
             headers: { 'Content-Type': 'multipart/form-data' },
 
         })
         return response.data;
     }
-    const mutation = useMutation(addProduct, {
+    const mutation = useMutation(updateProduct, {
         onSuccess: (res) => {
-            toast.success("Product added successfully!");
+            toast.success("Product updated successfully!");
             navigate('/profile/' + userId + '/seller-products');
         },
         onError: (err) => {
             console.log(err);
-            toast.error("Failed to add product!");
+            toast.error("Failed to update product!");
         },
     })
 
@@ -105,13 +154,21 @@ const AddProduct = () => {
         return response.data;
 
     }
-    const { data: categories } = useQuery('get-categories', getAllCategoires, {
+    const { data: categories } = useQuery(['get-categories', fetchedData], getAllCategoires, {
         onSuccess: (res) => {
-            console.log(res.data.documents)
+
             const fetchMainCategories = res.data.documents.map((category) => {
                 return { key: category.name, value: category._id };
             });
             setMainCategories(fetchMainCategories)
+            if (productData) {
+
+                const ca = res.data.documents.filter((category, index) => category.name === productData.category.name)
+                setCategoryId(ca[0]._id)
+                console.log(ca[0]._id, "categoryyyyyyyyyyyy")
+
+
+            }
         },
         onError: (err) => {
             console.error(err)
@@ -150,7 +207,7 @@ const AddProduct = () => {
 
     return (
         <div className={style.AddProduct}>
-            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize>
                 {({ values, setFieldValue, isValid, handleSubmit }) => {
                     const handleAddSize = (e) => {
                         e.preventDefault();
@@ -160,7 +217,6 @@ const AddProduct = () => {
                             setTempSize("")
                         }
                     };
-
                     const isAddSizeButtonDisabled = !['sm', 'md', 'lg', 'xl'].includes(tempSize) || values.size.includes(tempSize);
 
                     const handleAddColor = (e) => {
@@ -176,69 +232,54 @@ const AddProduct = () => {
                     // handle image Cover
                     const handleImageChange = (event) => {
                         const file = event.target.files[0];
-                        console.log(event.target.files)
+
                         if (file) {
                             const reader = new FileReader();
                             setImageCover(file)
-
+                            console.log(imageCoverCopy)
                             reader.onloadend = () => {
                                 // initialValues.imageCover = imageCoverCopy
                                 setImageCovershow(reader.result)
-                                console.log("imageCover", imageCoverCopy)
+
 
                             };
-                            // console.log(profilePicture,"prrrrrrrrr")
+
                             reader.readAsDataURL(file); // Read the file as a data URL
                         }
                     };
 
-                    const handleRemoveImageCover = () => {
-                        setImageCover(null)
-                        setImageCovershow(null)
-                    }
+                    const handleRemoveImage = (imageToRemove) => {
+                        setImages([]);
+                        setImagesShow([]);
+                        // console.log(imageToRemove)
+                    };
                     // handle Images 
                     const handleImagesChange = (event) => {
-                        console.log(event.target.files[0])
+
                         const file = event.target.files[0];
                         if (file) {
                             const reader = new FileReader();
-                            
-                            setImages(prevImages => [...prevImages, file])
+
+                            setImages(prevImages => [file])
                             reader.onloadend = () => {
                                 // if (reader.result && !multiImagesCopy.includes(reader.result) && multiImagesCopy.length <= 2 ) {
-                                    setImagesShow(prevImages => [...prevImages, reader.result])
+                                setImagesShow(prevImages => [...prevImages, reader.result])
                                 // }
                             };
                             reader.readAsDataURL(file);
                         }
                     };
-                    // const handleImagesChange = (event) => {
-                    //     const files = Array.from(event.target.files); // Convert FileList to an array
-                    //     if (files.length > 2) {
-                    //         toast.error("You can only upload up to 2 images."); // Optional: add a limit check
-                    //         return;
-                    //     }
-                    //     setImages(prevImages => [...prevImages, ...files]); // Add new files to the existing state
-                    // };
-                    // const handleImagesChange = (event) => {
-                    //     const files = Array.from(event.target.files); // Convert FileList to an array
-                    //     setImages(files); // Set array of files to state
-                    // };
-                    // const handleRemoveImage = (imageToRemove) => {
-                    //     setImages(prevImages => prevImages.filter(image => image !== imageToRemove));
-                    //     setImagesShow(prevImages => prevImages.filter(image => image !== imageToRemove));
-                    //     // console.log(imageToRemove)
-                    // };
+
                     const chooseCategory = (e) => {
-                        console.log(e.target.value)
+
                         console.log(e.target)
+                        console.log(e.target.value)
                         setFieldValue('category', e.target.value)
                         // initialValues.category=e.target.key
                         setCategoryId(e.target.value)
                     }
-                    const chooseCategories=(e)=>{
-                        // setFieldValue("categories", [...values.c, newSize]);
-                    }
+
+
                     return (
                         <form onSubmit={handleSubmit} className={style.formAddProduct}>
                             <div className={style.formAddProductContainer}>
@@ -391,9 +432,9 @@ const AddProduct = () => {
                                                 />
                                             </div>
                                             <div
-                                                onDoubleClick={handleRemoveImageCover}
+                                                // onDoubleClick={handleRemoveImage}
                                                 style={{
-                                                    display: imageCoverCopyShow? 'block' : 'none',
+                                                    display: imageCoverCopyShow ? 'block' : 'none',
                                                     backgroundImage: imageCoverCopyShow ? `url(${imageCoverCopyShow})` : 'none',
                                                     // display: imageCoverCopy ? 'block' : 'none',
                                                     // backgroundImage: imageCoverCopy ? `url(${imageCoverCopy})` : 'none',
@@ -428,27 +469,28 @@ const AddProduct = () => {
                                             </div>
                                             <div style={{
                                                 display: multiImagesCopyShow.length > 0 ? 'flex' : 'none',
-                                                display:"flex",
+                                                display: "flex",
                                                 width: '100%',
-                                                height: '150px',
+
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
                                                 marginBottom: "20px",
-                                                
+
                                             }}>
                                                 {
-                                                    // console.log(multiImagesCopyShow,"mmmmmm")
+
                                                     multiImagesCopyShow.map((image, index) => (
                                                         <div
                                                             key={index}
                                                             // onDoubleClick={() => handleRemoveImage(image)}
                                                             style={{
+
                                                                 backgroundImage: multiImagesCopyShow ? `url(${image})` : 'none',
                                                                 width: '45%',
                                                                 height: '150px',
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center',
-                                                                
+
                                                             }}
                                                         ></div>
                                                     ))
@@ -484,9 +526,10 @@ const AddProduct = () => {
                                             />
                                         </div>
                                         <div >
+
                                             <label htmlFor="subCategories">sub category</label>
                                             <FormController
-                                                name="subCategories"
+                                                name="subcategories"
                                                 control="select"
                                                 id="subCategories"
                                                 options={fullSubCategoriesoption}
@@ -501,7 +544,7 @@ const AddProduct = () => {
 
                                 </div>
                             </div>
-                            <button type="submit" className={styles.submit} disabled={!isValid}>add product</button>
+                            <button type="submit" className={styles.submit} disabled={!isValid}>update product</button>
 
                         </form>
                     );
@@ -511,5 +554,5 @@ const AddProduct = () => {
     );
 };
 
-export default AddProduct;
+export default UpdateProduct;
 
