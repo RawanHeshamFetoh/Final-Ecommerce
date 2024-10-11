@@ -84,7 +84,7 @@ const NavBar = () => {
                             <li className="nav-item">
                                 <NavLink className={({ isActive }) => `${isActive ? styles.activeLink : ''} ${styles.navLinkColor}`} to="/">Home</NavLink>                            </li>
                             <li className="nav-item">
-                                <NavLink className={` ${styles.navLinkColor}`} aria-current="page" to="#">about us</NavLink>
+                                <NavLink className={({ isActive }) => `${isActive ? styles.activeLink : ''} ${styles.navLinkColor}`} aria-current="page" to="/about">about us</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className={` ${styles.navLinkColor}`} aria-current="page" to="#">pages</NavLink>

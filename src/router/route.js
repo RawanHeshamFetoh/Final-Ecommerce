@@ -18,6 +18,7 @@ import ProductPage from '../pages/ProductPage'
 import ProductCategory from '../pages/ProductCategory'
 import CartPage from '../pages/Cart'
 import UpdateProduct from '../components/updateProduct/UpdateProdct'
+import About from '../pages/About'
 
 const AppRouter = () => {
     const location = useLocation();
@@ -35,6 +36,7 @@ const AppRouter = () => {
                 <Route path="/ProductPage:id" element={<ProductPage />} />
                 <Route path="/ProductCategory" element={<ProductCategory/>} />
                 <Route path="/CartPage" element={<CartPage />} />
+                <Route path="/about" element={<About />} />
 
                 <Route path='/forget-password-reset' element={<ResetPasswordForgetted />} />
                 {/* <Route element={<PrivateRoute/>}> */}
