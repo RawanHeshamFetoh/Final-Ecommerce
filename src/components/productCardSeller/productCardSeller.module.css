@@ -55,10 +55,26 @@
     bottom: 30%;
     left: 5%;
 }
+@media (max-width:1112px) {
+    .productCardImgLayout button{
+        font-size: 10px !important;
+    }
+    .productsBtn {
+        bottom: 35% !important ;
+    } ;
+}
 .productsBtn button:hover{
     background-color: #f46f4d;
     border: none;
 }
 .productCardImg:hover .productCardImgLayout{
     display: block;
+}
+@media (max-width: 992px) {
+    .productCardImgLayout button{
+        font-size: 12px !important;
+    }
+    .productsBtn {
+        bottom: 15% !important;
+    } ;
 }
