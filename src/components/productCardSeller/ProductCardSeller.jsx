@@ -4,9 +4,9 @@ import style from './productCardSeller.module.css'
 import axios from 'axios'
 import { useMutation } from 'react-query'
 import toast from 'react-hot-toast'
-const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfterDisc, id }) => {
-    console.log("price af",priceAfterDisc)
-    console.log("price ",price)
+import { useNavigate } from 'react-router-dom'
+const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfterDisc, id ,sellerId }) => {
+    const navigate= useNavigate();
     const deleteProduct= async()=>{
         return axios.delete(`http://localhost:3000/api/v1/products/${id}`,{
             withCredentials: true
@@ -25,9 +25,10 @@ const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfte
     const handleDeleteProject = ()=>{
         mutation.mutate()
     }
+    const handleNavigateToupdate=()=>{
+        navigate(`/profile/${sellerId}/update-product/${id}`)
+    }
     return (
-
-
         <div>
             <div className={style.productCard}>
                 <div className={style.productCardImg}>
@@ -36,9 +37,9 @@ const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfte
                         <div className={style.layout}></div>
                         <i className={`fa-regular fa-heart ${style.heart}`}></i>
                         <div className={style.productsBtn}>
-                            <button>update  <i class="fa-solid fa-arrow-right"></i></button>
-                            <button>view product <i class="fa-regular fa-eye"></i></button>
-                            <button onClick={handleDeleteProject}>delet product <i class="fa-regular fa-eye"></i></button>
+                            <button onClick={handleNavigateToupdate}>update Product  <i className="fa-solid fa-arrow-right"></i></button>
+                            <button>view product <i className="fa-regular fa-eye"></i></button>
+                            <button onClick={handleDeleteProject}>delet product <i className="fa-regular fa-eye"></i></button>
                         </div>
                     </div>
                 </div>

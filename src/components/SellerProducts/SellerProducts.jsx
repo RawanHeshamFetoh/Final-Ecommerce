@@ -9,18 +9,17 @@ import Cookies from 'js-cookie'
 const SellerProducts = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [products, setProducts] = useState([]);
-    // const userId = Cookies.get('userId');
+    const userId = Cookies.get('userId');
     const getProducts = async (pageNumber) => {
         const response = await axios.get(`http://localhost:3000/api/v1/products/?page=${pageNumber}`, {
             withCredentials: true,
         });
         return response.data;
     };
-
     const { isLoading, isError, error, data } = useQuery(['products', pageNumber], () => getProducts(pageNumber), {
         onError: (err) => console.error(err),
         onSuccess: (res) => {
-            const userId = Cookies.get("userId");
+            // const userId = Cookies.get("userId");
             const fullProducts = res.data.documents.filter(product => product.sellerId === userId)
             setProducts(fullProducts)
             console.log(fullProducts)
@@ -41,7 +40,7 @@ const SellerProducts = () => {
                         (
                             <div className={styles.productSellerContainer}>
 
-                                <ProductCardSeller price={product.price} imageCover={product.imageCover} id={product._id} title={product.title} priceAfterDisc={product.priceAfterDisc} ratingsAverage={product.ratingsAverage} />
+                                <ProductCardSeller price={product.price} imageCover={product.imageCover} id={product._id} title={product.title} priceAfterDisc={product.priceAfterDisc} ratingsAverage={product.ratingsAverage} sellerId={userId}/>
                             </div>
                         ))
                     ) : <p> there is no product ......</p>

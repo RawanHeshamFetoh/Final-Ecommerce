@@ -40,12 +40,12 @@ const Login = () => {
         
     };
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const mutation = useMutation(userLogin, {
         onSuccess: (data) => {
             console.log("Login successful:", data);
-            dispatch(setUserId(data._id))
-            dispatch(setUserData(data))
+            // dispatch(setUserId(data._id)) // remove redux Rawan if error appear
+            // dispatch(setUserData(data))
             if(data.role ==="seller"){
                 Cookies.set("role","seller",
                     {
@@ -84,8 +84,8 @@ const Login = () => {
             navigate("/")
             console.log("Login successful:", data);
             console.log(data)
-            dispatch(setUserId(data._id))
-            dispatch(setUserData(data))
+            // dispatch(setUserId(data._id))
+            // dispatch(setUserData(data))
             
             Cookies.set("userId", data._id, {
                 expires: 4,
