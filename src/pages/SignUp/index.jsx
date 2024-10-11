@@ -101,13 +101,12 @@ const SignUp = () => {
         // const { passwordConfirm, ...dataToSubmit } = values;
         // mutation.mutate(dataToSubmit);
         const { addresses, ...rest } = values; // Destructure addresses and the rest of the properties
-        // const newValues = {
-        //     ...rest,
-        //     address: addresses[0], // Set address to the first address
-        // };
-        console.log(values);
-        mutation.mutate(values);
-
+        const newValues = {
+            ...rest,
+            address: addresses[0], // Set address to the first address
+        };
+        // console.log(values);
+        mutation.mutate(newValues);
     };
 
     return (
