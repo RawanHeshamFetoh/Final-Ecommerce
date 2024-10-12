@@ -3,6 +3,7 @@
     margin: 0;
     box-sizing: border-box;
 }
+
 .header{
     background-color: #F7ECEA;
     text-transform: capitalize;
@@ -52,10 +53,13 @@
 .headerText h1{
     margin: 20px 0;
 }
-@media (max-width:1112px) {
+@media (max-width:1200px) {
     .header img{
         width: 50%;
     }
+}
+@media (max-width:1112px) {
+    
     .header .headerText{
         width: 45%;
     }
@@ -65,6 +69,9 @@
         width: 90%;
         margin: auto;
     }
+}
+.featureProuctsHeader{
+    margin-top: 100px;
 }
 .feature{
     width: 70%;
@@ -102,6 +109,15 @@
 .singleFeature p:last-of-type{
     font-size: 12px;
     margin-top: 5px;
+}
+@media (max-width:1200px) {
+    .feature{
+        top:-70px /* back  */
+    }
+    .singleFeature{
+        margin:20px 10px ;
+
+    }
 }
 @media (max-width: 992px) {
     .feature{
@@ -177,6 +193,11 @@
     justify-content: space-between;
     margin-top: 40px;
 }
+.productSellerContainer{
+    width: 23%;
+    height: 520px;
+    margin-bottom: 30px ;
+}
 @media (max-width: 1112px) {
     .homeTopic{
         margin-top: 50px;
@@ -194,10 +215,19 @@
     .homeTopic div {
         width: 30%;
     }
+    .productSellerContainer{
+        width: 45%;
+    }
 }
 @media (max-width: 767px) {
     .homeTopic div {
         width: 40%;
+    }
+    .productSellerContainer{
+        width: 95%;
+    }
+    .productsCollection{
+        justify-content: center;
     }
 }
 
@@ -327,6 +357,9 @@
 /* .review{
     position: relative;
 } */
+ .reviewContainer{
+    margin-bottom: 100px;
+ }
  .reviews{
     width: 100%;
     display: flex !important;
@@ -335,6 +368,7 @@
     align-items: center;
     height: fit-content;
     padding-bottom: 70px;
+
  }
 .person{
     width: 20%;

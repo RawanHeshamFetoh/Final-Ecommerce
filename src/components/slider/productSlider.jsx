@@ -90,6 +90,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap styles are imported
 import ProductCard from '../productCard/ProductCard';
 import styles from './productSlider.module.css'
+
 const ProductSlider = ({ products }) => {
     // Function to chunk products into groups of four
     const chunkArray = (array, chunkSize) => {
@@ -128,7 +129,10 @@ const ProductSlider = ({ products }) => {
                         >
                             <div className={styles.sliderContent}>
                                 {chunk.map(product => (
-                                    <ProductCard key={product.id} title={product.title} price={Math.round(product.price)} rate={Math.round(product.rating)} img={product.thumbnail} />
+                                    <div className={styles.psroductSliderCardsContainer}>
+                                    <ProductCard key={product.id} title={product.title} price={product.price} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
+                                    </div>
+                                    
                                 ))}
                             </div>
                         </div>

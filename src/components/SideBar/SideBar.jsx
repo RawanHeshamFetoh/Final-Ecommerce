@@ -26,6 +26,7 @@ const SideBar = () => {
             toast.success("log out successfully!");
             Cookies.remove('userId')
             Cookies.remove('access_token');
+            Cookies.remove('logedWith');
             Cookies.remove('role');
             navigate("/login")
             console.log(res)

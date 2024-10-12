@@ -1,21 +1,25 @@
-.formContainer{
+.formContainer {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
 }
-.formContainer img{
+
+.formContainer img {
     width: 50%;
 }
-.login{
+
+.login {
     width: 35%;
     margin-left: 50px;
 }
+
 .login h1 {
     text-transform: capitalize;
-    color: #0B0f28 ;
+    color: #0B0f28;
 }
-.select{
+
+.select {
     width: 90%;
     font-size: 14px;
     padding: 5px 7px;
@@ -28,40 +32,60 @@
     -o-border-radius: 5px;
     outline: none;
 }
-  .option:hover{
+
+.option:hover {
     background-color: #f46f46 !important;
     color: #0B0f28 !important;
 }
 
-.loginForm{
+.loginForm {
     margin-top: 70px;
-} 
-.formControl{
+}
+
+.formControl {
     margin-bottom: 35px;
 }
-.textArea{
+
+.textArea {
     width: 90%;
     padding: 5px;
-    
+
 }
-.textArea:focus{
+
+.textArea:focus {
     border: 1px solid #f46f46;
 }
-.input{
+
+.input {
     outline: none;
     border: none;
     border-bottom: 1px solid #0B0f28;
     padding: 5px;
     width: 90%;
 }
-.input:focus{
+
+.input:focus {
     border-bottom: 1px solid #f46f46;
 
 }
-.input::placeholder , .textArea::placeholder{
+
+.input::placeholder,
+.textArea::placeholder {
     text-transform: capitalize;
 }
-.submitContainer{
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.submitContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -69,12 +93,14 @@
     margin: 50px 0;
     padding: 0px 20px;
 }
-.submitContainer a{
+
+.submitContainer a {
     text-decoration: none;
     color: #f46f46 !important;
     font-size: 12px;
 }
-.submit{
+
+.submit {
     cursor: pointer;
     background-color: #f46f46;
     color: white;
@@ -89,39 +115,48 @@
     -ms-border-radius: 5px;
     -o-border-radius: 5px;
 }
-.submit:disabled{
+
+.submit:disabled {
     background-color: gray;
 }
-.formContainer p{
+
+.formContainer p {
     font-size: 12px;
     text-align: center;
 }
-.formContainer p a{
+
+.formContainer p a {
     color: #f46f46 !important;
     text-decoration: underline #f46f46 !important;
 
 }
+
 @media (max-width:992px) {
-    .login{
+    .login {
         width: 45%;
     }
-    .formContainer img{
+
+    .formContainer img {
         width: 45%;
     }
-    .login h1{
+
+    .login h1 {
         font-size: 25px;
     }
 }
+
 @media (max-width: 767px) {
-    .login{
-        width: 90% ;
+    .login {
+        width: 90%;
     }
-    .formContainer img{
+
+    .formContainer img {
         width: 90%;
         margin-bottom: 20px;
     }
 }
-.googleloginContainer{
+
+.googleloginContainer {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,6 +164,7 @@
     margin: 50px 0;
 
 }
+
 .googlelogin {
     width: 70%;
     background-color: transparent;
@@ -136,7 +172,7 @@
     outline: none;
     text-align: center;
     text-transform: capitalize;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     margin-top: 50px;
     padding: 15px 20px;
     border-radius: 5px;
@@ -147,7 +183,8 @@
     align-self: center;
     font-size: 14px;
 }
-.googlelogin::before{
+
+.googlelogin::before {
     content: "";
     position: absolute;
     top: 0;
@@ -161,7 +198,8 @@
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
 }
-.googlelogin::after{
+
+.googlelogin::after {
     content: "or";
     color: #75757E;
     padding: 2px 5px;
@@ -173,7 +211,8 @@
     background-color: white;
 
 }
-.googlelogin img{
+
+.googlelogin img {
     width: 20px;
     height: 20px;
     margin-right: 10px;

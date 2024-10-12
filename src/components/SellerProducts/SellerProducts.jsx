@@ -11,7 +11,8 @@ const SellerProducts = () => {
     const [products, setProducts] = useState([]);
     const userId = Cookies.get('userId');
     const getProducts = async (pageNumber) => {
-        const response = await axios.get(`http://localhost:3000/api/v1/products/?page=${pageNumber}`, {
+        const response = await axios.get(`http://localhost:3000/api/v1/products/?page=${pageNumber}&limit=9`, {
+        // const response = await axios.get(`http://localhost:3000/api/v1/products/`, {
             withCredentials: true,
         });
         return response.data;
@@ -20,6 +21,7 @@ const SellerProducts = () => {
         onError: (err) => console.error(err),
         onSuccess: (res) => {
             // const userId = Cookies.get("userId");
+            console.log(res.data)
             const fullProducts = res.data.documents.filter(product => product.sellerId === userId)
             setProducts(fullProducts)
             console.log(fullProducts)
@@ -30,6 +32,8 @@ const SellerProducts = () => {
     if (isError) return <div>Error: {error.message}</div>;
 
     const numberOfPage = data?.paginateResult.NumOfPages || 1;
+    // console.log(products.length ,"leeeeeeeeeeeeeeen")
+    // const numberOfPage =Math.ceil( products?.length / 9 )|| 1;
     return (
         <div>
             <div className={styles.productsContainer}>
@@ -43,7 +47,9 @@ const SellerProducts = () => {
                                 <ProductCardSeller price={product.price} imageCover={product.imageCover} id={product._id} title={product.title} priceAfterDisc={product.priceAfterDisc} ratingsAverage={product.ratingsAverage} sellerId={userId}/>
                             </div>
                         ))
-                    ) : <p> there is no product ......</p>
+                    ) : <div className={styles.emptyProducts}>
+                        <img src={require('../../assets/Empty-bro.png')} alt='empty products'/>
+                    </div>
                 }
 
             </div>

@@ -35,7 +35,7 @@ const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfte
                     <img src={imageCover} alt={title} />
                     <div className={style.productCardImgLayout}>
                         <div className={style.layout}></div>
-                        <i className={`fa-regular fa-heart ${style.heart}`}></i>
+                        
                         <div className={style.productsBtn}>
                             <button onClick={handleNavigateToupdate}>update Product  <i className="fa-solid fa-arrow-right"></i></button>
                             <button>view product <i className="fa-regular fa-eye"></i></button>
@@ -56,8 +56,10 @@ const ProductCardSeller = ({ imageCover, title, price, ratingsAverage, priceAfte
                         (price !== priceAfterDisc) && (<p>{priceAfterDisc} $</p>)
                     } */}
                     
-                    <p>{price}$</p>
-                    <p>{priceAfterDisc} $</p>
+                    <p  style={{textDecoration: price == priceAfterDisc  || priceAfterDisc == 0 ? 'none' :'lineThrought',
+                        color: price == priceAfterDisc || priceAfterDisc == 0 ? 'black' : '#656565'
+                     }} >{price}$</p>
+                    <p style={{display:price == priceAfterDisc  || priceAfterDisc == 0 ? 'none' :'inline-block' }}>{priceAfterDisc} $</p>
                 </div>
             </div>
         </div>

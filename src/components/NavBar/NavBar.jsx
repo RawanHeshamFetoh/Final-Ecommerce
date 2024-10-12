@@ -11,7 +11,7 @@ const NavBar = () => {
             <div className={styles.firstNav}>
                 <div className={`container ${styles.firstNavContainer} ${styles.flexContainer}`}>
                     <p>new offers this month only to get 20% free</p>
-                    <div className='d-flex justify-content-between'>
+                    {/* <div className='d-flex justify-content-between'>
                         <select name="country" id="language">
                             <option value="usd" selected> usd</option>
                             <option value="egypt"> egypt</option>
@@ -24,7 +24,7 @@ const NavBar = () => {
                             <div><i className="fa-brands fa-facebook-f"></i></div>
                             <div><i className="fa-brands fa-instagram"></i></div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -32,15 +32,17 @@ const NavBar = () => {
             <div className={styles.secondNav}>
                 <div className={`container ${styles.secondNavContainer} ${styles.flexContainer}`}>
                     <img src={require("../../assets/logo e.PNG")} alt="" />
+                    {/* <div className={styles.flexContainer}> */}
                     <div className={styles.flexContainer}>
                         <div className={styles.search}>
-                            <select name="categories" id="categories">
+                            {/* <select name="categories" id="categories">
                                 <option value="women"> women</option>
                                 <option value="men" selected> men</option>
-                            </select>
+                            </select> */}
                             <input type="text" name="search" id="search" placeholder='search your product' />
                         </div>
                         <button>search</button>
+                        </div>
                         {userId ?
                             (<div className={`${styles.flexContainer} ${styles.navIcon}`}>
                                 <div><NavLink to={`/profile/${userId}`}> <i className="fa-regular fa-user"></i> </NavLink></div>
@@ -63,7 +65,7 @@ const NavBar = () => {
                             </div>
                             )
                         }
-                    </div>
+                    {/* </div> */}
                 </div>
             </div>
             {/* last nav */}

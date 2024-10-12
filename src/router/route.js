@@ -19,14 +19,18 @@ import ProductCategory from '../pages/ProductCategory'
 import CartPage from '../pages/Cart'
 import UpdateProduct from '../components/updateProduct/UpdateProdct'
 import About from '../pages/About'
+import NotFound from '../pages/NotFound'
 
 const AppRouter = () => {
     const location = useLocation();
-    const noLayoutPaths = ['/login', '/signup', '/forget-password', '/forget-password-reset'];
+    const noLayoutPaths = ['/login', '/signup', '/forget-password', '/forget-password-reset',];
     const isProfileRoute = /^\/profile\/\d+/;
+    const isNotFoundPage = location.pathname === '*';
+    // const layoutPaths=['/contact-us' ,'/ProductCategory','/about']
     return (
         <>
-            {!noLayoutPaths.includes(location.pathname) && !isProfileRoute.test(location.pathname) && <NavBar />}
+            {!noLayoutPaths.includes(location.pathname) && !isProfileRoute.test(location.pathname) && location.pathname !== '*' && <NavBar />}
+            {/* {layoutPaths.includes(location.pathname) || isProfileRoute.test(location.pathname)  || <NavBar />} */}
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -49,9 +53,10 @@ const AppRouter = () => {
                     <Route path="seller-products" element={<SellerProducts />} />
                 </Route>
                 {/* </Route> */}
-                <Route path="*" element={<p>not found</p>} />
+                <Route path="*" element={<NotFound/>} />
             </Routes>
-            {!noLayoutPaths.includes(location.pathname) && !isProfileRoute.test(location.pathname) && <Footer />}
+            {/* {layoutPaths.includes(location.pathname) || isProfileRoute.test(location.pathname)  || <Footer />} */}
+            {!noLayoutPaths.includes(location.pathname) && !isProfileRoute.test(location.pathname) && location.pathname !== '*' && <Footer />}
         </>
     )
 }

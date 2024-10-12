@@ -44,12 +44,12 @@ const AddProduct = () => {
     const validationSchema = Yup.object({
         title: Yup.string().required("Required").min(3, "Invalid Product name").max(100, "Invalid Product name"),
         description: Yup.string().required("Required").min(3, "Invalid description"),
-        price: Yup.number().required("Required").positive("Not valid price"),
+        price: Yup.number().required("Required").positive("invlid value"),
         priceAfterDisc: Yup.number(),
-        discount: Yup.number().min(0).max(100),
+        discount: Yup.number().min(0, "invalid value").max(90, "invalid value").positive("invalid value"),
         imageCover: Yup.mixed(),
         images: Yup.array().of(Yup.mixed()).max(2),
-        stock: Yup.number().required("Required"),
+        stock: Yup.number().required("Required").positive("invlid value"),
         category: Yup.string().required("Required"),
         subCategories: Yup.array().required("Required").min(1),
         brand: Yup.string(),
@@ -66,7 +66,7 @@ const AddProduct = () => {
                 imageCover: imageCoverCopy,
                 subcategories: values.subCategories,
                 // images:[multiImagesCopy[0],multiImagesCopy[1]],
-                images:multiImagesCopy[0],
+                images: multiImagesCopy[0],
                 // images:[...multiImagesCopy],
                 sellerId: userId
             }
@@ -202,11 +202,11 @@ const AddProduct = () => {
                         const file = event.target.files[0];
                         if (file) {
                             const reader = new FileReader();
-                            
+
                             setImages(prevImages => [...prevImages, file])
                             reader.onloadend = () => {
                                 // if (reader.result && !multiImagesCopy.includes(reader.result) && multiImagesCopy.length <= 2 ) {
-                                    setImagesShow(prevImages => [...prevImages, reader.result])
+                                setImagesShow(prevImages => [...prevImages, reader.result])
                                 // }
                             };
                             reader.readAsDataURL(file);
@@ -236,9 +236,26 @@ const AddProduct = () => {
                         // initialValues.category=e.target.key
                         setCategoryId(e.target.value)
                     }
-                    const chooseCategories=(e)=>{
-                        // setFieldValue("categories", [...values.c, newSize]);
+                    const handleDiscountChange = () => {
+                        if (values.discount && values.price) {
+                            if (values.price > 0 && values.discount >= 0 && values.discount <= 90) {
+                                let discountedPrice = values.price - ((values.discount / 100) * values.price)
+                                console.log(discountedPrice)
+                                setFieldValue('priceAfterDisc', discountedPrice)
+                                console.log("Valid values");
+                            }
+                        }
                     }
+                    const handleDeleteSize = (size) => {
+                        setFieldValue('size', values.size.filter(sizevalues => sizevalues !== size))
+                    }
+
+                    const handleDeleteColor = (color) => {
+                        setFieldValue('colors', values.colors.filter(colorvalues => colorvalues !== color))
+                    }
+
+
+
                     return (
                         <form onSubmit={handleSubmit} className={style.formAddProduct}>
                             <div className={style.formAddProductContainer}>
@@ -284,7 +301,7 @@ const AddProduct = () => {
                                                 <div>
                                                     <div style={{ padding: "10px 0" }}>
                                                         {values.size.map((s, i) => (
-                                                            <span key={i} className={style.displaySizes}>{s}</span>
+                                                            <span key={i} className={style.displaySizes} onDoubleClick={() => handleDeleteSize(s)} >{s}</span>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -296,7 +313,7 @@ const AddProduct = () => {
                                                     <FormController
                                                         control="input"
                                                         type="color"
-                                                        name="color"
+                                                        name="colors"
                                                         placeholder="color"
                                                         id="color"
                                                         className={` ${style.formGroubSubInput} ${style.colorInput}`}
@@ -308,7 +325,7 @@ const AddProduct = () => {
                                                 <div>
                                                     <div style={{ padding: "10px 0" }}>
                                                         {values.colors.map((c, i) => (
-                                                            <span key={i} style={{
+                                                            <span key={i} onDoubleClick={()=>handleDeleteColor(c)} style={{
                                                                 backgroundColor: c, display: "inline-block", width: "20px", height: "20px", marginRight: "10px"
                                                             }}></span>
                                                         ))}
@@ -329,7 +346,8 @@ const AddProduct = () => {
                                                     id="price"
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
-
+                                                    min="1"
+                                                    onBlur={handleDiscountChange}
                                                 />
                                             </div>
                                             <div className={style.subGroup}>
@@ -339,8 +357,12 @@ const AddProduct = () => {
                                                     type="number"
                                                     name="discount"
                                                     id="discount"
+                                                    min="0"
+                                                    max="90"
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
+                                                    onBlur={handleDiscountChange}
+                                                // ={handleDiscountChange}
                                                 />
                                             </div>
                                         </div>
@@ -353,7 +375,7 @@ const AddProduct = () => {
                                                     type="number"
                                                     name="priceAfterDisc"
                                                     id="priceAfterDisc"
-
+                                                    readonly='readonly'
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
 
@@ -366,6 +388,7 @@ const AddProduct = () => {
                                                     type="number"
                                                     name="stock"
                                                     id="stock"
+                                                    min="1"
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
                                                 />
@@ -393,7 +416,7 @@ const AddProduct = () => {
                                             <div
                                                 onDoubleClick={handleRemoveImageCover}
                                                 style={{
-                                                    display: imageCoverCopyShow? 'block' : 'none',
+                                                    display: imageCoverCopyShow ? 'block' : 'none',
                                                     backgroundImage: imageCoverCopyShow ? `url(${imageCoverCopyShow})` : 'none',
                                                     // display: imageCoverCopy ? 'block' : 'none',
                                                     // backgroundImage: imageCoverCopy ? `url(${imageCoverCopy})` : 'none',
@@ -428,13 +451,13 @@ const AddProduct = () => {
                                             </div>
                                             <div style={{
                                                 display: multiImagesCopyShow.length > 0 ? 'flex' : 'none',
-                                                display:"flex",
+                                                display: "flex",
                                                 width: '100%',
                                                 height: '150px',
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
                                                 marginBottom: "20px",
-                                                
+
                                             }}>
                                                 {
                                                     // console.log(multiImagesCopyShow,"mmmmmm")
@@ -448,7 +471,7 @@ const AddProduct = () => {
                                                                 height: '150px',
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center',
-                                                                
+
                                                             }}
                                                         ></div>
                                                     ))

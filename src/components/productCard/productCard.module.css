@@ -10,6 +10,7 @@
 }
 .productCardImg{
     width: 100%;
+    height: 100%;
 }
 
 .productCardImgLayout{
@@ -51,7 +52,18 @@
     position: relative;
     bottom: 20%;
     left: 5%;
+    margin-bottom: 10px;
 }
+@media (max-width:1400px) and (min-width:992px) {
+    .productsBtn{
+        bottom: 25% ;
+    }
+    .productCardImgLayout button{
+        font-size: 10px !important;
+        width: 90%;
+    }
+}
+
 .productsBtn button:hover{
     background-color: #f46f4d;
     border: none;

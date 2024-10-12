@@ -218,6 +218,9 @@ const UpdateProduct = () => {
                         }
                     };
                     const isAddSizeButtonDisabled = !['sm', 'md', 'lg', 'xl'].includes(tempSize) || values.size.includes(tempSize);
+                    const handleDeleteSize = (size) => {
+                        setFieldValue('size', values.size.filter(sizevalues => sizevalues !== size))
+                    }
 
                     const handleAddColor = (e) => {
                         e.preventDefault();
@@ -227,6 +230,9 @@ const UpdateProduct = () => {
                             setTempColor('');
                         }
                     };
+                    const handleDeleteColor = (color) => {
+                        setFieldValue('colors', values.colors.filter(colorvalues => colorvalues !== color))
+                    }
                     const isAddColorButtonDisabled = !tempColor.trim() || values.colors.includes(tempColor.trim());
 
                     // handle image Cover
@@ -278,6 +284,16 @@ const UpdateProduct = () => {
                         // initialValues.category=e.target.key
                         setCategoryId(e.target.value)
                     }
+                    const handleDiscountChange = () => {
+                        if (values.discount && values.price) {
+                            if (values.price > 0 && values.discount >= 0 && values.discount <= 90) {
+                                let discountedPrice = values.price - ((values.discount / 100) * values.price)
+                                console.log(discountedPrice)
+                                setFieldValue('priceAfterDisc', discountedPrice)
+                                console.log("Valid values");
+                            }
+                        }
+                    }
 
 
                     return (
@@ -323,9 +339,9 @@ const UpdateProduct = () => {
                                                     <button onClick={handleAddSize} disabled={isAddSizeButtonDisabled}><i className="fa-solid fa-plus"></i> </button>
                                                 </div>
                                                 <div>
-                                                    <div style={{ padding: "10px 0" }}>
+                                                    <div style={{ padding: "10px 0" }} >
                                                         {values.size.map((s, i) => (
-                                                            <span key={i} className={style.displaySizes}>{s}</span>
+                                                            <span key={i} className={style.displaySizes} onDoubleClick={()=>handleDeleteSize(s)}>{s}</span>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -337,7 +353,7 @@ const UpdateProduct = () => {
                                                     <FormController
                                                         control="input"
                                                         type="color"
-                                                        name="color"
+                                                        name="colors"
                                                         placeholder="color"
                                                         id="color"
                                                         className={` ${style.formGroubSubInput} ${style.colorInput}`}
@@ -349,7 +365,7 @@ const UpdateProduct = () => {
                                                 <div>
                                                     <div style={{ padding: "10px 0" }}>
                                                         {values.colors.map((c, i) => (
-                                                            <span key={i} style={{
+                                                            <span key={i}  onDoubleClick={()=>handleDeleteColor(c)} style={{
                                                                 backgroundColor: c, display: "inline-block", width: "20px", height: "20px", marginRight: "10px"
                                                             }}></span>
                                                         ))}
@@ -368,9 +384,10 @@ const UpdateProduct = () => {
                                                     type="number"
                                                     name="price"
                                                     id="price"
+                                                    min="1"
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
-
+                                                    onBlur={handleDiscountChange}
                                                 />
                                             </div>
                                             <div className={style.subGroup}>
@@ -380,8 +397,11 @@ const UpdateProduct = () => {
                                                     type="number"
                                                     name="discount"
                                                     id="discount"
+                                                    min="0"
+                                                    max="90"
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
+                                                    onBlur={handleDiscountChange}
                                                 />
                                             </div>
                                         </div>
@@ -394,7 +414,7 @@ const UpdateProduct = () => {
                                                     type="number"
                                                     name="priceAfterDisc"
                                                     id="priceAfterDisc"
-
+                                                    readonly='readonly'
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
 
@@ -407,6 +427,7 @@ const UpdateProduct = () => {
                                                     type="number"
                                                     name="stock"
                                                     id="stock"
+                                                    min="1"
                                                     className={` ${styles.input} ${style.addProductInupt}`}
                                                     divStyle={styles.formControl}
                                                 />
@@ -523,6 +544,7 @@ const UpdateProduct = () => {
                                                 optionClass={styles.option}
                                                 divStyle={styles.formControl}
                                                 onChange={chooseCategory}
+                                                disabled
                                             />
                                         </div>
                                         <div >

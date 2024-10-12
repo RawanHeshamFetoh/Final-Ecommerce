@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from './home.module.css'
+import style from '../../components/SellerProducts/sellerProducts.module.css'
 import axios from 'axios';
 import ProductCard from '../../components/productCard/ProductCard';
 import OffersCard from '../../components/offersCard/OffersCard';
@@ -8,19 +9,33 @@ import ProductCategoryType2 from '../../components/productCategoryType2/productC
 import ReviewCard from '../../components/reviewCard/reviewCard';
 import BlogCard from '../../components/blogCard/blogCard';
 import ProductSlider from '../../components/slider/productSlider';
+import { useQuery } from 'react-query';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  const fetchProducts = async () => {
-    const response = await axios.get('https://dummyjson.com/products')
-    const data = await response.data.products;
-    setProducts(data);
-    console.log(products)
-  };
-  useEffect(() => {
-    fetchProducts();
+  // const fetchProducts = async () => {
+  //   const response = await axios.get('https://dummyjson.com/products')
+  //   const data = await response.data.products;
+  //   setProducts(data);
+  //   console.log(products)
+  // };
+  // useEffect(() => {
+  //   fetchProducts();
 
-  }, []);
+  // }, []);
+  const getProducts = async () => {
+    const response = await axios.get(`http://localhost:3000/api/v1/products/`, {
+      withCredentials: true,
+    });
+    return response.data;
+  };
+  const { isLoading, isError, error, data } = useQuery('products', getProducts, {
+    onError: (err) => console.error(err),
+    onSuccess: (res) => {
+      setProducts(res.data.documents)
+      console.log(res.data.documents, "full")
+    },
+  });
   return (
     <div>
       {/* Header */}
@@ -70,17 +85,18 @@ const Home = () => {
         <h1 >our top collection</h1>
         <div></div>
       </div>
-      <ul className={styles.changeCollection}>
+      {/* <ul className={styles.changeCollection}>
         <li> <a href="#" className={styles.active}> best seller</a></li>
         <li> <a href="#"> trending</a></li>
         <li> <a href="#"> new arrival</a></li>
-      </ul>
+      </ul> */}
       <div className={`container ${styles.productsCollection}`}>
         {
           products.map((product, i) => (
             (i < 8) && (
-              <ProductCard key={product.id} className={styles.product} title={product.title} price={Math.round(product.price)} rate={Math.round(product.rating)} img={product.thumbnail} />
-
+              <div className={styles.productSellerContainer}>
+                <ProductCard key={product.id} className={styles.product} title={product.title} price={Math.round(product.price)} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
+              </div>
             )
           ))
         }
@@ -112,7 +128,7 @@ const Home = () => {
 
       {/* slider */}
       <div className={styles.homeTopic}>
-        <h1 >featured product</h1>
+        <h1 className={styles.featureProuctsHeader}>featured product</h1>
         <div></div>
       </div>
       <div className='container'>
@@ -145,7 +161,7 @@ const Home = () => {
         <img src={require("../../assets/of1-removebg-preview.png")} alt='shopping ' />
       </div>
       {/* reviews */}
-      <div className={`container`}>
+      <div className={`container ${styles.reviewContainer}` } >
         <div id="Reviewcarousel" class="carousel carousel-fade slide" data-bs-ride="carousel">
           <div class={`carousel-indicators ${styles.indecator}`}>
             <button type="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -153,25 +169,25 @@ const Home = () => {
             <button type="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
           </div>
           <div class="carousel-inner">
-          {Array.from({ length: 3 }, (_, i) => (
-          <div className={` ${styles.reviews} carousel-item ${i === 0 ? 'active' : ''}` } key={i}>
-            <img src={require(`../../assets/p${i+1}.jpg`)} alt='person' className={styles.person} />
-            <img src={require("../../assets/person.jpg")} alt='person' className={styles.fakePerson} />
-            <div className={styles.reviewCard}>
-              <div className={`${styles.homeTopic} 
+            {Array.from({ length: 3 }, (_, i) => (
+              <div className={` ${styles.reviews} carousel-item ${i === 0 ? 'active' : ''}`} key={i}>
+                <img src={require(`../../assets/p${i + 1}.jpg`)} alt='person' className={styles.person} />
+                <img src={require("../../assets/person.jpg")} alt='person' className={styles.fakePerson} />
+                <div className={styles.reviewCard}>
+                  <div className={`${styles.homeTopic} 
             ${styles.reviewTopic}`}>
-                <h1 >customer review</h1>
-                <div></div>
+                    <h1 >customer review</h1>
+                    <div></div>
+                  </div>
+                  <ReviewCard img={require(`../../assets/p${i + 1}.jpg`)} name={"rawan fetoh"} comment={"good product"} rate={4} />
+                </div>
               </div>
-              <ReviewCard img={require(`../../assets/p${i+1}.jpg`)} name={"rawan fetoh"} comment={"good product"} rate={4} />
-            </div>
-          </div>
-          ))}
+            ))}
           </div>
         </div>
       </div>
       {/* blog */}
-      <div className={`${styles.blog} `}>
+      {/* <div className={`${styles.blog} `}>
         <div className={styles.homeTopic}>
           <h1 >from the blog</h1>
           <div></div>
@@ -181,7 +197,7 @@ const Home = () => {
             <BlogCard key={i} img={require('../../assets/person.jpg')} date={"july 14 , 2024"} time={"03:30 PM"} blog={"Customers have praised its effectiveness, with one reviewer stating they are very satisfied."} />
           ))}
         </div>
-      </div>
+      </div> */}
 
     </div>
   )

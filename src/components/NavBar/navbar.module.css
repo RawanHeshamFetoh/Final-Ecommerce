@@ -93,7 +93,8 @@
 }
 .search input{
     border: none;
-    border-left: 1px solid #e79e86;
+    /* border-left: 1px solid #e79e86; */
+    outline: none;
     padding: 0 20px;
 }
 .search + button {

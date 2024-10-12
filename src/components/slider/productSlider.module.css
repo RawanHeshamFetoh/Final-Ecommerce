@@ -3,20 +3,37 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding-bottom: 70px;
+    padding-bottom: 80px;
     height: fit-content;
+
 }
 
 
 
 .indecator button {
-    border: 1px solid #f46f4d !important; /* Remove border */
-    border-radius: 50%; /* Make them circular */
-    width: 20px !important; /* Width */
-    height:20px !important; /* Height */
-    margin: 0 5px; /* Spacing between indicators */
+    border: 1px solid #f46f4d !important; 
+    border-radius: 50%; 
+    width: 20px !important; 
+    height:20px !important;
+    margin: 0 5px; 
     background-color: #f46f4d !important;
-    transition: background-color 0.3s; /* Transition effect */
+    transition: background-color 0.3s; 
+}
+.psroductSliderCardsContainer{
+    width: 23%;
+}
+@media (max-width: 992px) {
+    .psroductSliderCardsContainer{
+        width: 45%;
+    }
+}
+@media (max-width: 767px) {
+    .psroductSliderCardsContainer{
+        width: 95%;
+    }
+    .sliderContent{
+        justify-content: center;
+    }
 }
 
 .indecator button.active {
