@@ -1,0 +1,25 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#0151a2",
+        "activityBar.background": "#0151a2",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#fd027f",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#0151a2",
+        "statusBar.background": "#01386f",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#0151a2",
+        "statusBarItem.remoteBackground": "#01386f",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#01386f",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#01386f99",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#01386f",
+    "cSpell.words": [
+        "ecommerce"
+    ]
+}
