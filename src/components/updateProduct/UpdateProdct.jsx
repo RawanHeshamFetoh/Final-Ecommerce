@@ -106,22 +106,16 @@ const UpdateProduct = () => {
 
     const onSubmit = (values) => {
         if (imageCoverCopy && userId) {
-            // if( userId){
-            // if(!values.subCategories){
-            //     values.subCategories = productData.subcategories
-            // }
+
 
             const updatedValue = {
                 ...values,
                 imageCover: imageCoverCopy,
-                // subcategories: values.subCategories,
-                // images:[multiImagesCopy[0],multiImagesCopy[1]],
-                images: multiImagesCopy[0],
-                // images:[...multiImagesCopy],
+                images: [...multiImagesCopy],
                 sellerId: userId
             }
 
-            console.log(updatedValue, "updddddated");
+            console.log(multiImagesCopy, "updddddated");
             mutation.mutate(updatedValue)
         } else {
             toast.error("image cover required")
@@ -238,7 +232,6 @@ const UpdateProduct = () => {
                     // handle image Cover
                     const handleImageChange = (event) => {
                         const file = event.target.files[0];
-
                         if (file) {
                             const reader = new FileReader();
                             setImageCover(file)
@@ -246,42 +239,40 @@ const UpdateProduct = () => {
                             reader.onloadend = () => {
                                 // initialValues.imageCover = imageCoverCopy
                                 setImageCovershow(reader.result)
-
-
                             };
 
                             reader.readAsDataURL(file); // Read the file as a data URL
                         }
                     };
 
-                    const handleRemoveImage = (imageToRemove) => {
-                        setImages([]);
-                        setImagesShow([]);
-                        // console.log(imageToRemove)
-                    };
+                   
+                    
                     // handle Images 
                     const handleImagesChange = (event) => {
-
                         const file = event.target.files[0];
                         if (file) {
                             const reader = new FileReader();
-
-                            setImages(prevImages => [file])
                             reader.onloadend = () => {
-                                // if (reader.result && !multiImagesCopy.includes(reader.result) && multiImagesCopy.length <= 2 ) {
-                                setImagesShow(prevImages => [...prevImages, reader.result])
-                                // }
+                                if (reader.result && !multiImagesCopyShow.includes(reader.result)   && multiImagesCopy.length < 2 ) {
+                                    setImages(prevImages => [...prevImages, file])
+                                    setImagesShow(prevImages => [...prevImages, reader.result])
+                                }else{
+                                    toast.error("you can't add more than 2 images and can't add dublicated")
+                                }
                             };
                             reader.readAsDataURL(file);
                         }
                     };
+                    const handleRemoveImage = (imageToRemove ,idxtoremove) => {
+                        setImagesShow(prevImages => prevImages.filter(image => image !== imageToRemove));
+                        setImages(prevFiles => prevFiles.filter((_, index) => index !== idxtoremove));
+                    };
+                    
 
                     const chooseCategory = (e) => {
-
                         console.log(e.target)
                         console.log(e.target.value)
                         setFieldValue('category', e.target.value)
-                        // initialValues.category=e.target.key
                         setCategoryId(e.target.value)
                     }
                     const handleDiscountChange = () => {
@@ -492,20 +483,17 @@ const UpdateProduct = () => {
                                                 display: multiImagesCopyShow.length > 0 ? 'flex' : 'none',
                                                 display: "flex",
                                                 width: '100%',
-
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
                                                 marginBottom: "20px",
-
                                             }}>
                                                 {
 
                                                     multiImagesCopyShow.map((image, index) => (
                                                         <div
                                                             key={index}
-                                                            // onDoubleClick={() => handleRemoveImage(image)}
+                                                            onDoubleClick={() => handleRemoveImage(image, index)}
                                                             style={{
-
                                                                 backgroundImage: multiImagesCopyShow ? `url(${image})` : 'none',
                                                                 width: '45%',
                                                                 height: '150px',

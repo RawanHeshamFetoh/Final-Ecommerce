@@ -1,0 +1,22 @@
+.shippingCart > div {
+    margin: 20px 0;
+}
+.shippingCart div:not(:first-child,:last-child) {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+}
+.shippingCart > div,
+.cartItem > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cartItem {
+    margin-bottom: 20px;
+}
+.cartItem img {
+    width: 70px;
+    height: 70px;
+    margin-right: 20px;
+}

@@ -12,7 +12,7 @@ const SideBar = () => {
     const userRole = Cookies.get('role')
     const loggedWith = Cookies.get('logedWith')
     console.log(userId)
-    const profileSubPaths = [`/profile/${userId}/reset-password`, `/profile/${userId}/add-product`, `/profile/${userId}/seller-products`];
+    const profileSubPaths = [`/profile/${userId}/reset-password`, `/profile/${userId}/add-product`, `/profile/${userId}/seller-products`,`/profile/${userId}/orders`];
     const isOnProfileSubPath = profileSubPaths.some(subPath => location.pathname.includes(subPath));
     const navigate = useNavigate()
     const logOutUser = async () => {
@@ -60,7 +60,7 @@ const SideBar = () => {
                     )
                 }
                 <li>
-                    <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-truck-fast"></i> orders</NavLink>
+                    <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/orders`}><i class="fa-solid fa-truck-fast"></i> orders</NavLink>
                 </li>
                 {userRole ? (
                     <>

@@ -11,7 +11,7 @@ const SellerProducts = () => {
     const [products, setProducts] = useState([]);
     const userId = Cookies.get('userId');
     const getProducts = async (pageNumber) => {
-        const response = await axios.get(`http://localhost:3000/api/v1/products/?page=${pageNumber}&limit=9`, {
+        const response = await axios.get(`http://localhost:3000/api/v1/users/${userId}/products?page=${pageNumber}&limit=9`, {
         // const response = await axios.get(`http://localhost:3000/api/v1/products/`, {
             withCredentials: true,
         });
@@ -22,9 +22,10 @@ const SellerProducts = () => {
         onSuccess: (res) => {
             // const userId = Cookies.get("userId");
             console.log(res.data)
-            const fullProducts = res.data.documents.filter(product => product.sellerId === userId)
-            setProducts(fullProducts)
-            console.log(fullProducts)
+            // const fullProducts = res.data.documents.filter(product => product.sellerId === userId)
+            // setProducts(fullProducts)
+            setProducts(res.data.documents)
+            // console.log(fullProducts)
         },
     });
 
@@ -32,7 +33,7 @@ const SellerProducts = () => {
     if (isError) return <div>Error: {error.message}</div>;
 
     const numberOfPage = data?.paginateResult.NumOfPages || 1;
-    // console.log(products.length ,"leeeeeeeeeeeeeeen")
+    console.log(products.length ,"leeeeeeeeeeeeeeen")
     // const numberOfPage =Math.ceil( products?.length / 9 )|| 1;
     return (
         <div>
