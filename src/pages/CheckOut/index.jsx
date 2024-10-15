@@ -5,6 +5,10 @@ import styles from '../Login/login.module.css'
 import style from './checkout.module.css'
 import FormController from '../../components/formConteoller/formController'
 import CheckoutCart from '../../components/checkoutCart/CheckoutCart'
+import axios from 'axios'
+import { useMutation } from 'react-query'
+import toast from 'react-hot-toast'
+import {loadStripe} from '@stripe/stripe-js';
 const Checkout = () => {
     // shippingAddress: {
     //     details: String,
@@ -12,6 +16,16 @@ const Checkout = () => {
     //     city: String,
     //     postalCode: String,
     //   },
+    const [cartId, setCartId] = useState(0);
+    const [products , setProducts]= useState([])
+
+    const handleCartId = (id) => {
+        setCartId(id);
+    };
+    const handleCartProducts =(products)=>{
+        setProducts(products)
+    }
+
     const egyptGovernorates = [
         { key: "choose your governorate", value: "" },
         { key: "Cairo", value: "Cairo" },
@@ -47,7 +61,7 @@ const Checkout = () => {
         switch (value) {
             case 'Cairo':
                 setShippingCost(100);
-                
+
                 break;
             case 'Alexandria':
                 setShippingCost(120);
@@ -132,9 +146,9 @@ const Checkout = () => {
                 break;
         }
     };
-    const paymentMethodTypeOption =[
-        {key: 'bank' , value: 'card'},
-        {key: 'cash on delivery', value: 'cash'},
+    const paymentMethodTypeOption = [
+        { key: 'bank', value: 'card' },
+        { key: 'cash on delivery', value: 'cash' },
     ]
     const initialValues = {
         shippingAddress: {
@@ -143,7 +157,9 @@ const Checkout = () => {
             city: "",
             postalCode: "",
         },
-        copon:''
+        shippingPrice:"",
+        copon: '',
+        paymentMethodType:''
     }
     const validationSchema = Yup.object({
         shippingAddress: Yup.object({
@@ -152,18 +168,142 @@ const Checkout = () => {
             city: Yup.string().required("Required"),
             postalCode: Yup.number().required("Required").min(10000, ' Zip code must be 5 number')
                 .max(99999, ' Zip code must be 5 number'),
-        })
+        }),
+        paymentMethodType:Yup.string().required("Required"),
 
     })
     const onSubmit = (values) => {
-        console.log(values)
+        const updatedValue={...values,
+            shippingPrice:shippingCost
+        }
+        if(values.paymentMethodType === 'cash' || !values.paymentMethodType){
+            mutation.mutate(updatedValue)
+            console.log(updatedValue)
+        }
+        if(values.paymentMethodType=== 'card'){
+            cardMutation.mutate(products)
+        }
     }
+    const handlecheckoutWithCash=async(data)=>{
+        const respone = await axios.post(`http://localhost:3000/api/v1/orders/${cartId}`,data,{
+            withCredentials: true,
+        })
+        return respone.data
+    }
+    const mutation = useMutation(handlecheckoutWithCash,{
+        onSuccess:()=>{
+            toast.success('your order is under processing')
+        },
+        onError:()=>{
+            toast.error('something went wrong')
+        }
+    })
+    // const cardPayment = async()=>{
+    //     const stripe = await loadStripe('pk_test_51Q2apNRtt1tTdQQg9PbuS24EiGLRAV4z2eiCASEaT0ndTU0QTnijANIdr2R0Vv9mVfy9SGhNtP61h1DmQPLIvcim000xtDAbr2');
+    // }
+    console.log(products,"checkoutP")
+    // {
+    //     "shipping_price":100,
+    //     "line_items":[
+    //          {
+    //       "title": "Product 1",
+    //       "description": "This is a cool product",
+    //       "price": 100, // $20.00
+    //       "quantity": 1,
+    //       "imageCover":"https://images.unsplash.com/photo-1523275335684-37898b6baf30?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D"
+    //     },
+    //     {
+    //       "title": "Product 2",
+    //       "description": "Another cool product",
+    //       "price": 100, // $15.00
+    //       "quantity": 1,
+    //       "imageCover":"https://burst.shopifycdn.com/photos/wrist-watches.jpg?width=1000&format=pjpg&exif=0&iptc=0"
+    //     }
+    //     ]
+    // }
+    
+    // console.log(bodydata,"bodydata")
+    const handlecheckoutWithCard = async(products)=>{
+        // const body = { products };
+        const bodydata ={
+            shipping_price:shippingCost,
+            line_items:products.map((product)=>({
+                title:product.product.title,
+                description:product.product.description,
+                price: product.price,
+                quantity:product.quantity,
+                imageCover:product.product.imageCover
+    
+            }))
+        } 
+        const response = await axios.post(`http://localhost:3000/api/v1/orders/checkout-session/${cartId}`,bodydata,{
+            withCredentials: true,
+            headers:{
+                "Content-Type": "application/json"
+            }
+        
+        })
+        console.log(response)
+        return response.data
+    }
+    const cardMutation = useMutation(handlecheckoutWithCard,{
+        onSuccess:async(res)=>{
+        const stripe = await loadStripe('pk_test_51Q2apNRtt1tTdQQg9PbuS24EiGLRAV4z2eiCASEaT0ndTU0QTnijANIdr2R0Vv9mVfy9SGhNtP61h1DmQPLIvcim000xtDAbr2');
+        const result =await stripe.redirectToCheckout({ sessionId: res.session.id});
+            toast.success('your order is under processing')
+        },
+        onError:(err)=>{
+            // console.log(err)
+            toast.error('something went wrong')
+        }
+    })
+    // const cards= async()=>{
+    //     const stripe = await loadStripe('pk_test_51Q2apNRtt1tTdQQg9PbuS24EiGLRAV4z2eiCASEaT0ndTU0QTnijANIdr2R0Vv9mVfy9SGhNtP61h1DmQPLIvcim000xtDAbr2');
+    //     const body={
+    //         products:products
+    //     }
+    //     const headers={
+    //         "Content-Type": "application/json"
+    //     }
+    //     const response = await fetch('http://localhost:3000/webhook-checkout',{
+    //         method:'POST',
+    //         body: JSON.stringify(body),
+    //         headers:headers
+    //     })
+    //     const session = await response.json();
+    //     const result = stripe.redirectToCheckout({
+    //         sessionId: session.id
+    //     })
+    // }
+    //applay copon
+    const applayCopon = async(copon)=>{
+        
+        const response = await axios.put(`http://localhost:3000/api/v1/cart/applyCoupon`,copon,{
+            withCredentials: true,
+        })
+        return response.data;
+    }
+    const coponMutation = useMutation(applayCopon,{
+        onSuccess:(res)=>{
+            console.log(res.data,"cooooooooo")
+            toast.success('your coupon is applied successfully')
+        },
+        onError:()=>{
+            toast.error('something went wrong')
+        }
+    })
+    const handleApplayCopon =(copon)=>{
+        let data = {coupon:copon}
+        coponMutation.mutate(data)
+    }
+
+    // 
 
     return (
         <div className={` ${style.checkout}`}>
             <h3>billing details</h3>
-
             <div>
+                
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
                     {
                         formik => {
@@ -202,7 +342,7 @@ const Checkout = () => {
                                                 selectClass={styles.select}
                                                 optionClass={styles.option}
                                                 divStyle={styles.formControl}
-                                                onChange={(e)=>{
+                                                onChange={(e) => {
                                                     handleCityChange(e.target.value);
                                                     formik.setFieldValue("shippingAddress.city", e.target.value);
                                                 }}
@@ -221,16 +361,16 @@ const Checkout = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <CheckoutCart shippingCost={shippingCost} img={require('../../assets/pr11.png')}/>
+                                        <CheckoutCart shippingCost={shippingCost} img={require('../../assets/pr11.png')} onCartIdChange={handleCartId} order={false} cartProduct={handleCartProducts}/>
                                         <div>
-                                            <FormController 
+                                            <FormController
                                                 control='radio'
                                                 options={paymentMethodTypeOption}
                                                 name='paymentMethodType'
                                             />
                                         </div>
                                         <div className={style.copon}>
-                                        <FormController
+                                            <FormController
                                                 control="input"
                                                 type="text"
                                                 id="copon"
@@ -238,10 +378,11 @@ const Checkout = () => {
                                                 name="copon"
                                                 placeholder="copon"
                                                 className={styles.input}
+                                                
                                             />
-                                            <button className={styles.submit}>applay copon</button>
+                                            <button type='button' className={styles.submit} onClick={()=>handleApplayCopon(formik.values.copon)}>applay copon {formik.values.copon}</button>
                                         </div>
-                                            
+
                                         <button type="submit" className={styles.submit}>checkout</button>
                                     </div>
                                 </Form>

@@ -9,20 +9,41 @@ import ProductCategoryType2 from '../../components/productCategoryType2/productC
 import ReviewCard from '../../components/reviewCard/reviewCard';
 import BlogCard from '../../components/blogCard/blogCard';
 import ProductSlider from '../../components/slider/productSlider';
+import styless from '../About/about.module.css'
 import { useQuery } from 'react-query';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  // const fetchProducts = async () => {
-  //   const response = await axios.get('https://dummyjson.com/products')
-  //   const data = await response.data.products;
-  //   setProducts(data);
-  //   console.log(products)
-  // };
-  // useEffect(() => {
-  //   fetchProducts();
-
-  // }, []);
+  const [reviews, setReviews] = useState([]);
+  const [brands, setBrands] = useState([]);
+  useEffect(() => {
+    // Call your fetch function here
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/v1/reviews?limit=3"
+        );
+        setReviews(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    // Call your fetch function here
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/v1/brands?limit=6"
+        );
+        setBrands(response.data.data.documents);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   const getProducts = async () => {
     const response = await axios.get(`http://localhost:3000/api/v1/products/`, {
       withCredentials: true,
@@ -95,7 +116,7 @@ const Home = () => {
           products.map((product, i) => (
             (i < 8) && (
               <div className={styles.productSellerContainer}>
-                <ProductCard key={product.id} className={styles.product} title={product.title} price={Math.round(product.price)} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
+                <ProductCard key={product._id} id={product._id} className={styles.product} title={product.title} price={Math.round(product.price)} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
               </div>
             )
           ))
@@ -164,12 +185,22 @@ const Home = () => {
       <div className={`container ${styles.reviewContainer}` } >
         <div id="Reviewcarousel" class="carousel carousel-fade slide" data-bs-ride="carousel">
           <div class={`carousel-indicators ${styles.indecator}`}>
-            <button type="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            {/* <button type="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
             <button type="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type ="button" data-bs-target="#Reviewcarousel" data-bs-slide-to="2" aria-label="Slide 3"></button> */}
+            {Array.from({ length: reviews.length }, (_, i) => (
+                <button
+                  type="button"
+                  data-bs-target="#Reviewcarousel"
+                  data-bs-slide-to={i}
+                  className={i === 0 ? "active" : ""}
+                  aria-current={i === 0 ? "true" : "false"}
+                  aria-label={`Slide ${i + 1}`}
+                ></button>
+              ))}
           </div>
           <div class="carousel-inner">
-            {Array.from({ length: 3 }, (_, i) => (
+            {/* {Array.from({ length: 3 }, (_, i) => (
               <div className={` ${styles.reviews} carousel-item ${i === 0 ? 'active' : ''}`} key={i}>
                 <img src={require(`../../assets/p${i + 1}.jpg`)} alt='person' className={styles.person} />
                 <img src={require("../../assets/person.jpg")} alt='person' className={styles.fakePerson} />
@@ -182,10 +213,59 @@ const Home = () => {
                   <ReviewCard img={require(`../../assets/p${i + 1}.jpg`)} name={"rawan fetoh"} comment={"good product"} rate={4} />
                 </div>
               </div>
-            ))}
+            ))} */}
+            {reviews.map((review, i) => (
+                <div
+                  className={` ${styles.reviews} carousel-item ${
+                    i === 0 ? "active" : ""
+                  }`}
+                  key={i}
+                >
+                  <img
+                    src={review.user_id.profilePicture}
+                    alt="person"
+                    className={styles.person}
+                  />
+                  {/*<img
+                    src={require(`../../assets/p${i + 1}.jpg`)}
+                    alt="person"
+                    className={styles.person}
+                  />*/}
+                  <img
+                    src={require("../../assets/person.jpg")}
+                    alt="person"
+                    className={styles.fakePerson}
+                  />
+                  <div className={styles.reviewCard}>
+                    <div
+                      className={`${styles.homeTopic} 
+          ${styles.reviewTopic}`}
+                    >
+                      <h1>customer review</h1>
+                      <div></div>
+                    </div>
+                    <ReviewCard
+                      img={review.user_id.profilePicture}
+                      name={review.user_id.username}
+                      comment={review.comment}
+                      rate={review.rating}
+                    />
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </div>
+      <div >
+          <div className={`row container justify-content-center align-items-center p-3 `} style={{margin:' 0 auto'}}>
+            {brands.map((brand) => (
+              
+              <div key={brand._id} className={` ${styless.brandImgDev} col-6 col-md-2 bg-white `}>
+                <img src={brand.image} alt={brand.name} className={`img-fluid `} />
+              </div>
+            ))}
+          </div>
+        </div>
       {/* blog */}
       {/* <div className={`${styles.blog} `}>
         <div className={styles.homeTopic}>

@@ -1,34 +1,69 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './orderDetails.module.css'
 import Cookies from 'js-cookie'
 import CheckoutCart from '../checkoutCart/CheckoutCart'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
+import { useQuery } from 'react-query'
 const OrderDetails = () => {
     const role = Cookies.get('role')
+    const [order, setorder]=useState(null)
+    const { orderId } = useParams()
+    const getOrderDetails = async () => {
+        const response = await axios.get(`http://localhost:3000/api/v1/orders/${orderId}`, {
+            withCredentials: true
+        })
+        return response.data
+    }
+    useQuery('get order details', getOrderDetails, {
+        
+        onSuccess: (res) => {
+            console.log(res.data)
+            setorder(res.data)
+        },
+        onError: (error) => {
+            console.log(error)
+        }
+    })
+    const changeDate = (dateToChange) => {
+        const date = new Date(dateToChange);
+
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const formattedDate = date.toLocaleDateString('en-GB', options);
+        return formattedDate
+    }
+    
+    
     return (
         <div className={`container ${styles.orderDetailsContainer} `} >
 
             <h2>Order Details</h2>
+            { order && (
+
             <div className={`${role === 'seller' ? styles.sellerOrder : styles.userOrder}`}>
                 {(role === 'seller' ) && 
                 <div className={styles.orderDetails}>
                     <div>
-                        <div><p>user name  </p><p> rawan</p> </div>
-                        <div><p> email  </p><p> rawan@gmail.com </p> </div>
-                        <div><p> phone  </p><p> 01112013685 </p> </div>
+                        <div><p>user name  </p><p> {order.user.username}</p> </div>
+                        <div><p> email  </p><p> {order.user.email} </p> </div>
+                        <div><p> phone  </p><p> {order.shippingAddress.phone} </p> </div>
                     </div>
                     <div>
-                        <div><p> Order ID </p><p> 123456</p> </div>
-                        <div><p> Order Date </p><p> 2022-05-12</p> </div>
+                        <div><p> Order ID </p><p> {order._id}</p> </div>
+                        <div><p> Order Date </p><p>{changeDate(order.createdAt)} </p> </div>
                         <div><p> Order Status </p><p> Pending</p> </div>
                     </div>
                     <div>
-                        <div><p> details </p><p> 123 Main St</p> </div>
-                        <div><p> City </p><p> New York</p> </div>
-                        <div><p> Zip </p><p> 10001</p> </div>
+                        <div><p> details </p><p> {order.shippingAddress.details}</p> </div>
+                        <div><p> City </p><p> {order.shippingAddress.city}</p> </div>
+                        <div><p> Zip </p><p> {order.shippingAddress.postalCode }</p> </div>
                     </div>
                 </div>}
-                <CheckoutCart shippingCost={20} img={require('../../assets/pr11.png')} />
+
+                <CheckoutCart  order={true} />
             </div>
+            )}
+
         </div>
     )
 }

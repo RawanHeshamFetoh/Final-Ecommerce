@@ -23,6 +23,7 @@ import NotFound from '../pages/NotFound'
 import Checkout from '../pages/CheckOut'
 import Orders from '../components/orders/Orders'
 import OrderDetails from '../components/orderDetails/OrderDetails'
+import SellerDashBoard from '../components/sellerDashBoard/SellerDashBoard'
 
 const AppRouter = () => {
     const location = useLocation();
@@ -54,6 +55,7 @@ const AppRouter = () => {
                     <Route path="add-product" element={<AddProduct />} />
                     <Route path="update-product/:productId" element={<UpdateProduct />} />
                     <Route path="seller-products" element={<SellerProducts />} />
+                    <Route path="seller-dashboard" element={<SellerDashBoard />} />
                     <Route path="orders" element={<Orders />} />
                     <Route path='order-details/:orderId' element={<OrderDetails/>}/>
                 </Route>

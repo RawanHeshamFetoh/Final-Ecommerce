@@ -58,14 +58,10 @@ const AddProduct = () => {
 
     const onSubmit = (values) => {
         if (imageCoverCopy && userId) {
-            // if( userId){
-            // console.log("object", values.category)
             const updatedValue = {
                 ...values,
                 imageCover: imageCoverCopy,
                 subcategories: values.subCategories,
-                // images:[multiImagesCopy[0],multiImagesCopy[1]],
-                // images: multiImagesCopy[0],
                 images:[...multiImagesCopy],
                 sellerId: userId
             }

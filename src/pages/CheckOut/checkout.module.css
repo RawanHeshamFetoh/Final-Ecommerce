@@ -29,9 +29,15 @@
     border: 1px solid #ED7A56;
 }
 
-@media (max-width:992px) {
+@media (max-width:1112px) {
     .checkOutContainer > div{
         width: 40%;
+    }
+}
+@media (max-width:992px) {
+    .checkOutContainer > div{
+        width: 45%;
+        font-size: 12px;
     }
     .copon button{
         font-size: 12px;
@@ -45,7 +51,7 @@
         align-items: center;
     }
     .checkOutContainer > div{
-        width: 95%;
+        width: 90%;
         margin-bottom: 30px;
     }
 }
