@@ -9,7 +9,7 @@ import axios from "axios";
 import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup ,GoogleAuthProvider} from "firebase/auth";
 
 import { app } from "../../lib/FireBase";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,10 +34,10 @@ const Login = () => {
 
     const userLogin = async (user) => {
         const response = await axios.post("http://localhost:3000/api/v1/auth/login", user, {
-            withCredentials: true,
+            withCredentials: true, 
         });
         return response.data;
-
+        
     };
     const navigate = useNavigate();
     // const dispatch = useDispatch();
@@ -46,8 +46,8 @@ const Login = () => {
             console.log("Login successful:", data);
             // dispatch(setUserId(data._id)) // remove redux Rawan if error appear
             // dispatch(setUserData(data))
-            if (data.role === "seller") {
-                Cookies.set("role", "seller",
+            if(data.role ==="seller"){
+                Cookies.set("role","seller",
                     {
                         expires: 4,
                         path: '/'
@@ -56,8 +56,7 @@ const Login = () => {
             }
             Cookies.set("userId", data._id, {
                 expires: 4,
-                path: '/'
-            })
+                path: '/'})
             navigate("/")
             toast.success("Login Successfully")
         },
@@ -65,7 +64,7 @@ const Login = () => {
             toast.error("Invalid Email or Password Please Try Again")
         },
     });
-
+   
 
     const onSubmit = (values) => {
         mutation.mutate(values);
@@ -75,8 +74,8 @@ const Login = () => {
     const auth = getAuth(app)
     const googleProvider = new GoogleAuthProvider()
     const userLoginWithGoogle = async (user) => {
-        const response = await axios.post("http://localhost:3000/api/v1/auth/auth/google", user, {
-            withCredentials: true,
+        const response = await axios.post("http://localhost:3000/api/v1/auth/auth/google", user,{
+            withCredentials: true, 
         })
         return response.data
     }
@@ -87,16 +86,15 @@ const Login = () => {
             console.log(data)
             // dispatch(setUserId(data._id))
             // dispatch(setUserData(data))
-
+            
             Cookies.set("userId", data._id, {
                 expires: 4,
-                path: '/'
-            })
-            Cookies.set("logedWith", "google", {
-                expires: 4,
-                path: '/'
-            })
-
+                path: '/'})
+                Cookies.set("logedWith","google",{
+                    expires: 4,
+                    path: '/'
+                })
+                
             toast.success("Login Successfully")
         },
         onError: (error) => {
@@ -160,7 +158,7 @@ const Login = () => {
                     }}
                 </Formik>
                 <div className={styles.googleloginContainer}>
-                    <button onClick={signInwithGoogle} className={styles.googlelogin}><img src={require("../../assets/search.png")} /> sign in with google</button>
+                    <button onClick={signInwithGoogle} className={styles.googlelogin}><img src={require("../../assets/search.png")}/> sign in with google</button>
                 </div>
             </div>
         </div>

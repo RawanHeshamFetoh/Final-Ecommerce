@@ -20,6 +20,10 @@ import CartPage from '../pages/Cart'
 import UpdateProduct from '../components/updateProduct/UpdateProdct'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
+import Checkout from '../pages/CheckOut'
+import Orders from '../components/orders/Orders'
+import OrderDetails from '../components/orderDetails/OrderDetails'
+import SellerDashBoard from '../components/sellerDashBoard/SellerDashBoard'
 import WishlistPage from '../pages/WishlistPage'
 
 
@@ -39,21 +43,25 @@ const AppRouter = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/contact-us" element={<ContactUs />} />
                 <Route path="/forget-password" element={<ForgetPassword />} />
-                <Route path="/ProductPage/:_id" element={<ProductPage />} />
+                <Route path="/ProductPage:_id" element={<ProductPage />} />
                 <Route path="/ProductCategory" element={<ProductCategory/>} />
                 <Route path="/CartPage" element={<CartPage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/WishlistPage" element={<WishlistPage />} />
 
+
                 <Route path='/forget-password-reset' element={<ResetPasswordForgetted />} />
                 {/* <Route element={<PrivateRoute/>}> */}
-
+                <Route path='/checkout' element={<Checkout/>}/>
                 <Route path="/profile/:id" element={<Profile />} >
                     <Route index element={<UpdateProfile />} />
                     <Route path="reset-password" element={<ResetPassword />} />
                     <Route path="add-product" element={<AddProduct />} />
                     <Route path="update-product/:productId" element={<UpdateProduct />} />
                     <Route path="seller-products" element={<SellerProducts />} />
+                    <Route path="seller-dashboard" element={<SellerDashBoard />} />
+                    <Route path="orders" element={<Orders />} />
+                    <Route path='order-details/:orderId' element={<OrderDetails/>}/>
                 </Route>
                 {/* </Route> */}
                 <Route path="*" element={<NotFound/>} />

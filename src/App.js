@@ -11,13 +11,13 @@ const queryClient = new QueryClient();
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <Provider store={store}>
+            {/* <Provider store={store}> */}
                 <Router>
                     <AppRouter />
                 </Router>
                 <Toaster position='top center' />
-            </Provider>,
-            document.getElementById('root')
+            {/* </Provider> */}
+            {/* document.getElementById('root') */}
         </QueryClientProvider>
     );
 }

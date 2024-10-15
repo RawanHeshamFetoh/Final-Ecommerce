@@ -21,7 +21,7 @@ const UpdateProfile = () => {
     console.log(userC,"mgkfm")
 
     const [profilePicture, setProfilePicture] = useState(defaultImage);
-    const [profilePictureUpdated, setProfilePictureUpdated] = useState(defaultImage);
+    const [profilePictureUpdated, setProfilePictureUpdated] = useState(profilePicture);
     const egyptGovernorates = [
         { key: "choose your governorate", value: "" },
         { key: "Cairo", value: "Cairo" },
@@ -159,14 +159,14 @@ const UpdateProfile = () => {
         // const {addresses,...updatedValue}=values
         // const updatedValues = {
          
-        //     ...updatedValue,
+        //     ...values,
         //     address: values.addresses[0],
         //     profilePicture: profilePictureUpdated // Set profilePicture to the local state
         // };
         const updatedValues = {
             ...values,
             
-            profilePicture: profilePictureUpdated // Set profilePicture to the local state
+            profilePicture: profilePictureUpdated  // Set profilePicture to the local state
         };
 
         console.log(updatedValues, "updated values");
@@ -211,7 +211,7 @@ const UpdateProfile = () => {
 
     return (
         <div className={style.updateProfile}>
-            <h1>hello , {userDataFetch?.username || 'user'}</h1>
+            <h3>hello , {userDataFetch?.username || 'user'}</h3>
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize >
                 {

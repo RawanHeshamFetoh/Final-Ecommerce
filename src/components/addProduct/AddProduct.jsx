@@ -38,7 +38,6 @@ const AddProduct = () => {
         category: "",
         subcategories: [],
         brand: "",
-
     };
 
     const validationSchema = Yup.object({
@@ -46,7 +45,7 @@ const AddProduct = () => {
         description: Yup.string().required("Required").min(3, "Invalid description"),
         price: Yup.number().required("Required").positive("invlid value"),
         priceAfterDisc: Yup.number(),
-        discount: Yup.number().min(0, "invalid value").max(90, "invalid value").positive("invalid value"),
+        discount: Yup.number().min(0, "invalid value").max(90, "invalid value"),
         imageCover: Yup.mixed(),
         images: Yup.array().of(Yup.mixed()).max(2),
         stock: Yup.number().required("Required").positive("invlid value"),
@@ -59,15 +58,11 @@ const AddProduct = () => {
 
     const onSubmit = (values) => {
         if (imageCoverCopy && userId) {
-            // if( userId){
-            // console.log("object", values.category)
             const updatedValue = {
                 ...values,
                 imageCover: imageCoverCopy,
                 subcategories: values.subCategories,
-                // images:[multiImagesCopy[0],multiImagesCopy[1]],
-                images: multiImagesCopy[0],
-                // images:[...multiImagesCopy],
+                images:[...multiImagesCopy],
                 sellerId: userId
             }
             console.log(updatedValue);
@@ -130,19 +125,37 @@ const AddProduct = () => {
         })
         return response.data;
     }
-    const { data } = useQuery(['get-subcategories', categoryId], getAllSubCategoreisforCategory, {
-        onSuccess: (res) => {
-            console.log(res.data.documents)
-            const fetchSubCategories = res.data.documents.map((subcategory) => {
-                return { key: subcategory.name, value: subcategory._id };
-            });
-            setSubCategories(fetchSubCategories)
-        },
-        onError: (err) => {
-            console.error(err)
-        }
-    })
 
+    // const { data } = useQuery(['get-subcategories', categoryId], getAllSubCategoreisforCategory, {
+    //     onSuccess: (res) => {
+    //         console.log(res.data.documents)
+    //         const fetchSubCategories = res.data.documents.map((subcategory) => {
+    //             return { key: subcategory.name, value: subcategory._id };
+    //         });
+    //         setSubCategories(fetchSubCategories)
+    //     },
+    //     onError: (err) => {
+    //         console.error(err)
+    //     }
+    // })
+    // Call useQuery outside useEffect and control execution with the enabled option
+  const { data, error, isLoading } = useQuery(
+    ["get-subcategories", categoryId],
+    () => getAllSubCategoreisforCategory(categoryId),
+    {
+      enabled: !!categoryId, 
+      onSuccess: (res) => {
+        const fetchSubCategories = res.data.documents.map((subcategory) => {
+          return { key: subcategory.name, value: subcategory._id };
+        });
+        setSubCategories(fetchSubCategories);
+      },
+      onError: (err) => {
+        console.error(err);
+      },
+    }
+  );
+    
     let fullSubCategoriesoption = [
         { key: "select sub catategory", value: '' },
         ...subCategoriesfe
@@ -202,33 +215,21 @@ const AddProduct = () => {
                         const file = event.target.files[0];
                         if (file) {
                             const reader = new FileReader();
-
-                            setImages(prevImages => [...prevImages, file])
                             reader.onloadend = () => {
-                                // if (reader.result && !multiImagesCopy.includes(reader.result) && multiImagesCopy.length <= 2 ) {
-                                setImagesShow(prevImages => [...prevImages, reader.result])
-                                // }
+                                if (reader.result && !multiImagesCopyShow.includes(reader.result)   && multiImagesCopy.length < 2 ) {
+                                    setImages(prevImages => [...prevImages, file])
+                                    setImagesShow(prevImages => [...prevImages, reader.result])
+                                }else{
+                                    toast.error("you can't add more than 2 images and can't add dublicated")
+                                }
                             };
                             reader.readAsDataURL(file);
                         }
                     };
-                    // const handleImagesChange = (event) => {
-                    //     const files = Array.from(event.target.files); // Convert FileList to an array
-                    //     if (files.length > 2) {
-                    //         toast.error("You can only upload up to 2 images."); // Optional: add a limit check
-                    //         return;
-                    //     }
-                    //     setImages(prevImages => [...prevImages, ...files]); // Add new files to the existing state
-                    // };
-                    // const handleImagesChange = (event) => {
-                    //     const files = Array.from(event.target.files); // Convert FileList to an array
-                    //     setImages(files); // Set array of files to state
-                    // };
-                    // const handleRemoveImage = (imageToRemove) => {
-                    //     setImages(prevImages => prevImages.filter(image => image !== imageToRemove));
-                    //     setImagesShow(prevImages => prevImages.filter(image => image !== imageToRemove));
-                    //     // console.log(imageToRemove)
-                    // };
+                    const handleRemoveImage = (imageToRemove ,idxtoremove) => {
+                        setImagesShow(prevImages => prevImages.filter(image => image !== imageToRemove));
+                        setImages(prevFiles => prevFiles.filter((_, index) => index !== idxtoremove));
+                    };
                     const chooseCategory = (e) => {
                         console.log(e.target.value)
                         console.log(e.target)
@@ -453,7 +454,7 @@ const AddProduct = () => {
                                                 display: multiImagesCopyShow.length > 0 ? 'flex' : 'none',
                                                 display: "flex",
                                                 width: '100%',
-                                                height: '150px',
+                                                
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
                                                 marginBottom: "20px",
@@ -464,7 +465,7 @@ const AddProduct = () => {
                                                     multiImagesCopyShow.map((image, index) => (
                                                         <div
                                                             key={index}
-                                                            // onDoubleClick={() => handleRemoveImage(image)}
+                                                            onDoubleClick={() => handleRemoveImage(image, index)}
                                                             style={{
                                                                 backgroundImage: multiImagesCopyShow ? `url(${image})` : 'none',
                                                                 width: '45%',

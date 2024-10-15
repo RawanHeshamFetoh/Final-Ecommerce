@@ -24,7 +24,7 @@ const ContactUs = () => {
   }
   return (
     <div>
-      <Header title={"contact us"} details={"home > contactus"} />
+      <Header title={"contact us"} details={"home > contactus"} bgImage={"contactHeader"} />
       <div className='container'>
         <div className={` ${styles.contactContiner} `}>
           <div className={styles.contactInfo}>

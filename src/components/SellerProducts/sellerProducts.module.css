@@ -9,8 +9,6 @@
     height: 520px;
     margin-bottom: 30px ;
 }
-
-
 .sellercard{
     width: 100%;
 }
@@ -32,7 +30,7 @@
     .productSellerContainer{
         width: 90%;
         margin: auto;
-        height: 70px;
+        height: 570px;
     }
 }
 .paginationContainer{

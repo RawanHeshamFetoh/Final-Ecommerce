@@ -175,7 +175,7 @@ const SignUp = () => {
                                     divStyle={styles.formControl}
                                 />
                                 <div className={styles.submitContainer}>
-                                    <button type="submit" className={styles.submit} disabled={!formik.isValid || formik.isSubmitting}>sign up</button>
+                                    <button type="submit" className={styles.submit} disabled={!formik.isValid }>sign up</button>
 
                                 </div>
                                 <p>already have an account? <Link to={'/login'}>login</Link> </p>

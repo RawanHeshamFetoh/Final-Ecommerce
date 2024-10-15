@@ -51,6 +51,7 @@
 }
 .customer p:first-of-type{
     font-weight:bold ;
+    font-size: 15px;
 
 }
 .customer p:last-of-type{

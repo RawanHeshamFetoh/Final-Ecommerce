@@ -7,12 +7,11 @@ import { useMutation } from 'react-query'
 import toast from 'react-hot-toast'
 const SideBar = () => {
     const location = useLocation();
-    //  const profileSubPaths = ['/profile/reset-password','/profile/add-product'];
     const userId = Cookies.get('userId')
     const userRole = Cookies.get('role')
     const loggedWith = Cookies.get('logedWith')
     console.log(userId)
-    const profileSubPaths = [`/profile/${userId}/reset-password`, `/profile/${userId}/add-product`, `/profile/${userId}/seller-products`];
+    const profileSubPaths = [`/profile/${userId}/reset-password`, `/profile/${userId}/add-product`, `/profile/${userId}/seller-products`,`/profile/${userId}/orders`,`/profile/${userId}/seller-dashboard`];
     const isOnProfileSubPath = profileSubPaths.some(subPath => location.pathname.includes(subPath));
     const navigate = useNavigate()
     const logOutUser = async () => {
@@ -60,12 +59,12 @@ const SideBar = () => {
                     )
                 }
                 <li>
-                    <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-truck-fast"></i> orders</NavLink>
+                    <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/orders`}><i class="fa-solid fa-truck-fast"></i> orders</NavLink>
                 </li>
                 {userRole ? (
                     <>
                         <li>
-                            <NavLink className={`${styles.navLink}`}><i class="fa-solid fa-chart-line"></i> dashboard  </NavLink>
+                            <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/seller-dashboard`}><i class="fa-solid fa-chart-line"></i> dashboard  </NavLink>
                         </li>
                         <li>
                             <NavLink className={({ isActive }) => `${isActive ? styles.navLinkActive : ''} ${styles.navLink}`} to={`/profile/${userId}/add-product`}><i class="fa-solid fa-plus"></i> add products</NavLink>
