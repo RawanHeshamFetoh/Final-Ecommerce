@@ -24,6 +24,8 @@ import Checkout from '../pages/CheckOut'
 import Orders from '../components/orders/Orders'
 import OrderDetails from '../components/orderDetails/OrderDetails'
 import SellerDashBoard from '../components/sellerDashBoard/SellerDashBoard'
+import WishlistPage from '../pages/WishlistPage'
+
 
 const AppRouter = () => {
     const location = useLocation();
@@ -41,10 +43,12 @@ const AppRouter = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/contact-us" element={<ContactUs />} />
                 <Route path="/forget-password" element={<ForgetPassword />} />
-                <Route path="/ProductPage:id" element={<ProductPage />} />
+                <Route path="/ProductPage/:id" element={<ProductPage />} />
                 <Route path="/ProductCategory" element={<ProductCategory/>} />
                 <Route path="/CartPage" element={<CartPage />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/WishlistPage" element={<WishlistPage />} />
+
 
                 <Route path='/forget-password-reset' element={<ResetPasswordForgetted />} />
                 {/* <Route element={<PrivateRoute/>}> */}

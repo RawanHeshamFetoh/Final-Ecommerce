@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
-
-import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom'; // Import useParams to get the dynamic id
 
 const ProductTabs = () => {
+    const { _id } = useParams(); // Get product id from URL
     const [activeTab, setActiveTab] = useState('description');
-    // const { products } = useSelector((state) => state.allproducts);
+    const [product, setProduct] = useState(null); // State to store the specific product
 
-
-    const [products, setProducts] = useState([]);
-    const fetchProducts = async () => {
-        const response = await axios.get("http://localhost:3000/api/v1/products");
-        const data = await response.data.data.documents;
-        console.log(response.data.data.documents);
-        setProducts(data);
-        console.log(products);
+    // Fetch product by ID from the URL
+    const fetchProduct = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/api/v1/products/${_id}`);
+            const data = response.data.data; // Assuming product data is directly in data
+            setProduct(data);
+        } catch (error) {
+            console.error('Error fetching product', error);
+        }
     };
+
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        fetchProduct();
+    }, [_id]); // Re-fetch product when id changes
 
-
-    if (!products || products.length === 0) {
-        return <p>No products available.</p>;
+    // Show loading or error if product isn't loaded yet
+    if (!product) {
+        return <p>Loading product details...</p>;
     }
 
     return (
@@ -48,7 +50,6 @@ const ProductTabs = () => {
                             borderRadius: "5px",
                             marginLeft: "20px",
                             backgroundColor: "#EF9E86",
-
                         }}
                     >
                         Product Details
@@ -62,7 +63,6 @@ const ProductTabs = () => {
                             borderRadius: "5px",
                             marginLeft: "20px",
                             backgroundColor: "#EF9E86",
-
                         }}
                     >
                         Product Reviews
@@ -73,17 +73,17 @@ const ProductTabs = () => {
             <div className="tab-content mt-3">
                 {activeTab === 'description' && (
                     <div id="description" className="tab-pane fade show active">
-                        <p>{products[0].description}</p>
+                        <p>{product.description}</p>
                     </div>
                 )}
                 {activeTab === 'details' && (
                     <div id="details" className="tab-pane fade show active">
-                        <p>{products[0].details}</p>
+                        <p>{product.details}</p>
                     </div>
                 )}
                 {activeTab === 'reviews' && (
                     <div id="reviews" className="tab-pane fade show active">
-                        <p>{products[0].reviews}</p>
+                        <p>{product.reviews}</p>
                     </div>
                 )}
             </div>

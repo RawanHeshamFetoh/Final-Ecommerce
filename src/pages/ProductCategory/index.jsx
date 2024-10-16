@@ -2,29 +2,58 @@ import React, { useEffect, useState } from "react";
 import styles from "./productCategory.module.css";
 import Header from "../../components/Title/Header";
 import ProductCard from "../../components/productCard/ProductCard";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux"; // Import useDispatch
 import axios from "axios";
 import productCat from "../../assets/productCat.avif";
+import toast from "react-hot-toast";
+import { addToWishlist } from "../../redux/wishlistSlice"; // Import addToWishlist action
 
 const ProductCategory = () => {
     const [products, setProducts] = useState([]);
+    const dispatch = useDispatch(); // Define dispatch
+
     const fetchProducts = async () => {
-        const response = await axios.get("http://localhost:3000/api/v1/products");
-        const data = await response.data.data.documents;
-        console.log(response.data.data.documents);
-        setProducts(data);
-        console.log(products);
+        try {
+            const response = await axios.get("http://localhost:3000/api/v1/products");
+            const data = response.data.data.documents;
+            setProducts(data);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
     };
+
+    const handleAddToWishlist = async (productToAdd) => {
+        try {
+            // Send the product to the server
+            await axios.post(
+                "http://localhost:3000/api/v1/wishlist",
+                { productId: productToAdd }, // Send the product details to the server
+                { withCredentials: true }
+            );
+
+            // Dispatch the action to update the wishlist in Redux
+            dispatch(addToWishlist(productToAdd));
+            toast.success("Product added to Wishlist");
+        } catch (error) {
+            console.error("Error adding product to Wishlist:", error);
+            toast.error("Failed to add product to Wishlist");
+        }
+    };
+
     useEffect(() => {
-        fetchProducts();
+        fetchProducts(); // Fetch products on component mount
     }, []);
 
     return (
         <div>
-            <Header title={"Product"} details={"Home > Product"} imgPath={productCat} />
+            <Header
+                title={"Product"}
+                details={"Home > Product"}
+                imgPath={productCat}
+            />
 
             <div className="container mt-4">
-                <div className="row">
+            <div className="row">
                     {/* Sidebar */}
                     <div className="col-md-3">
                         <div className="card">
@@ -108,56 +137,85 @@ const ProductCategory = () => {
                                 {products.map(
                                     (product, i) =>
                                         i < 8 && (
-                                            <ProductCard
-                                                key={product.id}
-                                                className={styles.product}
-                                                title={product.title}
-                                                price={Math.round(product.price)}
-                                                rate={Math.round(product.rating)}
-                                                img={product.imageCover}
-                                            />
+                                            <div
+                                                key={product._id}
+                                                className={styles.productSellerContainer}
+                                            >
+                                                <ProductCard
+                                                    id={product._id}
+                                                    className={styles.product}
+                                                    title={product.title}
+                                                    price={Math.round(product.price)}
+                                                    rate={Math.round(product.rating)}
+                                                    img={product.imageCover}
+                                                    priceAfterDisc={product.priceAfterDisc}
+                                                    onAddToWishlist={() => handleAddToWishlist(product)} // Pass handler to ProductCard
+                                                />
+                                            </div>
                                         )
                                 )}
                             </div>
                         </div>
-
-
                     </div>
 
+                    {/* Brands */}
                     <div className="row text-center ">
                         <div className="col-2">
-                            <img src={require('../../assets/Nike-Logo.jpg')} alt="Adidas" className={`img-fluid ${styles.fixedSizeImg}`} />
+                            <img
+                                src={require("../../assets/Nike-Logo.jpg")}
+                                alt="Adidas"
+                                className={`img-fluid ${styles.fixedSizeImg}`}
+                            />
                         </div>
                         <div className="col-2">
-                            <img src={require('../../assets/Dior_Logo.svg.png')} alt="Dior" className={`img-fluid ${styles.fixedSizeImg}`} />
+                            <img src={require('../../assets/puma-logo-9869295F1B-seeklogo.com.png')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
                         </div>
                         <div className="col-2">
-                            <img src={require('../../assets/Gucci-Logo.png')} alt="Gucci" className={`img-fluid ${styles.fixedSizeImg}`} />
+                            <img
+                                src={require("../../assets/Dior_Logo.svg.png")}
+                                alt="Dior"
+                                className={`img-fluid ${styles.fixedSizeImg}`}
+                            />
                         </div>
                         <div className="col-2">
-                            <img src={require('../../assets/Givenchy_logo.jpg')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
+                            <img
+                                src={require("../../assets/Gucci-Logo.png")}
+                                alt="Gucci"
+                                className={`img-fluid ${styles.fixedSizeImg}`}
+                            />
                         </div>
                         <div className="col-2">
-                            <img src={require('../../assets/town-team-logo.avif')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
+                            <img
+                                src={require("../../assets/Givenchy_logo.jpg")}
+                                alt="Givenchy"
+                                className={`img-fluid ${styles.fixedSizeImg}`}
+                            />
                         </div>
                         <div className="col-2">
-                            <img src={require('../../assets/Nike-Logo.jpg')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
+                            <img
+                                src={require("../../assets/town-team-logo.avif")}
+                                alt="Givenchy"
+                                className={`img-fluid ${styles.fixedSizeImg}`}
+                            />
                         </div>
                     </div>
 
                     <div className="row text-center">
                         <div className={`container ${styles.productsCollection}`}>
-                            {products.map((product, i) =>
-                                i < 4 && (
-                                    <div key={product.id}>
-                                        <img src={product.images} alt={product.title} className={`img-fluid ${styles.fixedSizeImg}`} />
-                                    </div>
-                                )
+                            {products.map(
+                                (product, i) =>
+                                    i < 4 && (
+                                        <div key={product.id}>
+                                            <img
+                                                src={product.imageCover}
+                                                alt={product.title}
+                                                className={`img-fluid ${styles.fixedSizeImg}`}
+                                            />
+                                        </div>
+                                    )
                             )}
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>

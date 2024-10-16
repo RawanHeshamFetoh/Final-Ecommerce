@@ -4,6 +4,7 @@ import cartBanner from "../../assets/cart_banner.png";
 import CartList from "../../components/CartPage/CartList";
 import CartSummary from "../../components/CartPage/CartSummary";
 import styles from "./";
+import { Link } from "react-router-dom";
 
 
 const CartPage = () => {
@@ -25,8 +26,10 @@ const CartPage = () => {
                         <CartSummary />
                     </div>
                 </div>
-                <div className="row mt-3">
+                {/* <div className="row mt-3">
                     <div className="col-md-8 d-flex justify-content-between">
+                    <Link to="/">
+
                         <button
                             className="btn text-white"
                             style={{
@@ -36,13 +39,17 @@ const CartPage = () => {
                         >
                             Continue Shopping
                         </button>
+                        </Link>
                         <button className="btn btn-outline-secondary">Clear Cart</button>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="row text-center mt-5">
                         <div className="col-2">
                             <img src={require('../../assets/Nike-Logo.jpg')} alt="Adidas" className={`img-fluid ${styles.fixedSizeImg}`} />
+                        </div>
+                        <div className="col-2">
+                            <img src={require('../../assets/puma-logo-9869295F1B-seeklogo.com.png')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
                         </div>
                         <div className="col-2">
                             <img src={require('../../assets/Dior_Logo.svg.png')} alt="Dior" className={`img-fluid ${styles.fixedSizeImg}`} />
@@ -56,9 +63,7 @@ const CartPage = () => {
                         <div className="col-2">
                             <img src={require('../../assets/town-team-logo.avif')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
                         </div>
-                        <div className="col-2">
-                            <img src={require('../../assets/Nike-Logo.jpg')} alt="Givenchy" className={`img-fluid ${styles.fixedSizeImg}`} />
-                        </div>
+                        
                     </div>
 
 

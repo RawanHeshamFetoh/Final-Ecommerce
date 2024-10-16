@@ -130,7 +130,7 @@ const ProductSlider = ({ products }) => {
                             <div className={styles.sliderContent}>
                                 {chunk.map(product => (
                                     <div className={styles.psroductSliderCardsContainer}>
-                                    <ProductCard key={product.id} title={product.title} price={product.price} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
+                                    <ProductCard key={product._id} id={product._id} title={product.title} price={product.price} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
                                     </div>
                                     
                                 ))}

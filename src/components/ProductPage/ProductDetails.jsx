@@ -1,57 +1,118 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row, Button } from "react-bootstrap";
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../../redux/productSlice';
+import { Col, Row } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/cartSlice";
+import { useMutation } from "react-query";
+import Cookies from 'js-cookie';
+import toast from "react-hot-toast";
 
-// const { products } = useSelector((state) => state.allproducts);
+
 
 const ProductDetails = () => {
     const [quantity, setQuantity] = useState(1); // Initialize quantity state
-    const { id } = useParams();
+    const { id } = useParams(); // Get product id from the URL
+    const [product, setProduct] = useState(null); // State to store the specific product
+    const [loading, setLoading] = useState(true); // Loading state
+    const [error, setError] = useState(null); // Error state
+
     const dispatch = useDispatch();
 
-    // Get products and status from the Redux store
-    const products = useSelector((state) => state.products.items);
-    const productStatus = useSelector((state) => state.products.status);
-    const product = products.find((prod) => prod.id === parseInt(id)); // Find product by dynamic id
+    // Function to handle Add to Cart and send the product to the server
+    const handleAddToCart = async (productToAdd) => {
 
-    // Fetch products on mount if the status is idle
-    useEffect(() => {
-        if (productStatus === 'idle') {
-            dispatch(fetchProducts());
+        console.log(productToAdd)
+        try {
+            // Send the product to the server
+            const response = await axios.post(
+                "http://localhost:3000/api/v1/cart", 
+                productToAdd, // Send the product details to the server
+                { withCredentials: true }
+            );
+            // console.log(response)
+            // Update the Redux store only after successfully adding to the server
+            dispatch(addToCart(productToAdd));
+            console.log("Product added to cart on server and Redux:", productToAdd);
+            toast.success("Product added to cart")
+
+
+            console.log("Product added to cart on server:",response.data)
+            return response.data;
+        } catch (error) {
+            console.error("Error adding product to cart:", error);
+            throw error; // Ensure error is handled by mutation
         }
-    }, [dispatch, productStatus]);
+    };
+
+    // Prepare the product to be sent to both server and Redux
+    const mutation = useMutation(() => {
+        if (product) {
+            const productToAdd = {
+                productId: product._id, // Use `_id` to identify the product
+                color: product.colors[0],
+                // img: product.imageCover,
+                // title: product.title,
+                // price: product.price,
+                // priceAfterDisc: product.priceAfterDisc,
+                // quantity: quantity, // Include selected quantity
+            };
+
+            return handleAddToCart(productToAdd); // Call handleAddToCart to send to server and Redux
+        }
+    });
+
+    // Fetch product details from the server
+    const fetchProduct = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(
+                `http://localhost:3000/api/v1/products/${id}`
+            );
+            const data = response.data.data;
+            setProduct(data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching product:", error);
+            setError("Failed to load product details.");
+            setLoading(false);
+        }
+    };
+
+    // Fetch product when component mounts and when the _id changes
+    useEffect(() => {
+        fetchProduct();
+    }, [id]);
+
+    // Show loading or error states
+    if (loading) {
+        return <p>Loading product details...</p>;
+    }
+
+    if (error) {
+        return <p>{error}</p>;
+    }
+
+    // If product is not found
+    if (!product) {
+        return <p>Product not found.</p>;
+    }
 
     // Increment quantity
     const increment = () => {
-        setQuantity(quantity + 1);
+        setQuantity((prevQuantity) => prevQuantity + 1);
     };
 
     // Decrement quantity, ensuring it doesn't go below 1
     const decrement = () => {
         if (quantity > 1) {
-            setQuantity(quantity - 1);
+            setQuantity((prevQuantity) => prevQuantity - 1);
         }
     };
-
-    // Show loading message if products are still being fetched
-    if (productStatus === 'loading') {
-        return <p>Loading...</p>;
-    }
-
-    // Show error message if fetching products failed
-    if (productStatus === 'failed') {
-        return <p>Failed to load products.</p>;
-    }
-
-    // If no products or product with this id not found
-    if (!product) {
-        return <p>Product not found.</p>;
-    }
+    
     return (
-        <Row className="product-details mt-4 ">
+        <Row className="product-details mt-4">
+            {/* Product Gallery */}
             <Col md={2}>
                 <div
                     className="product-gallery col-md-9"
@@ -59,36 +120,38 @@ const ProductDetails = () => {
                 >
                     <div className=" mb-1">
                         <img
-                            src={products[1].images}
-                            alt={products[1].title}
+                            src={product.imageCover}
+                            alt={product.title}
                             className="img-fluid "
                         />
                     </div>
                     <div className=" mb-1">
                         <img
-                            src={products[1].images}
-                            alt={products[1].title}
+                            src={product.imageCover}
+                            alt={product.title}
                             className="img-fluid "
                         />
                     </div>
                     <div className=" mb-1">
                         <img
-                            src={products[1].images}
-                            alt={products[1].title}
+                            src={product.imageCover}
+                            alt={product.title}
                             className="img-fluid"
                         />
                     </div>
                     <div className=" mb-1">
                         <img
-                            src={products[1].images}
-                            alt={products[1].title}
+                            src={product.imageCover}
+                            alt={product.title}
                             className="img-fluid"
                         />
                     </div>
                 </div>
             </Col>
+
+            {/* Product Main Image */}
             <Col md={5}>
-                <div>
+                <div className="product-main-image">
                     {product ? (
                         <img
                             src={product.imageCover}
@@ -100,10 +163,12 @@ const ProductDetails = () => {
                     )}
                 </div>
             </Col>
+
+            {/* Product Details */}
             <Col md={5}>
                 <div className="product-details-content">
                     <h2>
-                        {products[1].title}
+                        {product.title}
                         <span
                             className="badge ms-3 text-dark"
                             style={{
@@ -111,7 +176,7 @@ const ProductDetails = () => {
                                 borderRadius: "0",
                             }}
                         >
-                            {products[1].availability}
+                            {product.availability}
                         </span>
                     </h2>
 
@@ -153,18 +218,18 @@ const ProductDetails = () => {
                         <Col md={6}>
                             <div>
                                 <h5>
-                                    ${products[1].price}
-                                    <span className="ms-1" style={{ color: "#EF9E86" }}>
-                                        {products[0].discount} Off
+                                    ${product.price}
+                                    <span className="ms-5" style={{ color: "#EF9E86" }}>
+                                        {product.priceAfterDisc} Off
                                     </span>
                                 </h5>
                             </div>
                             <div className="mb-3">
-                                <h5>{products[1].colors}</h5>
+                                <h5>{product.colors?.join(', ') || 'Unavailable'}</h5>
                             </div>
                             <div className="mb-3">
                                 <h5>
-                                    <span className="ms-3">{products[1].size}</span>{" "}
+                                    <span className="ms-3">{product.size}</span>{" "}
                                 </h5>
                             </div>
                             <div className="mb-3">
@@ -181,14 +246,14 @@ const ProductDetails = () => {
                             <div className="mb-3">
                                 <h5>
                                     <span style={{ color: "#EF9E86" }}>
-                                        {products[1].stock}  items in stock
+                                        {product.stock} items in stock
                                     </span>
                                 </h5>
                             </div>
                         </Col>
                     </Row>
 
-                    <div className="product-actions mt-4 ">
+                    <div className="product-actions mt-4">
                         <button
                             className="btn btn-lg me-3 shadow"
                             style={{
@@ -199,6 +264,7 @@ const ProductDetails = () => {
                             Buy Now
                         </button>
                         <button
+                            onClick={() => mutation.mutate()} 
                             className="btn btn-outline-secondary btn-lg shadow"
                             style={{
                                 borderRadius: "5px",

@@ -46,18 +46,22 @@ const NavBar = () => {
                         {userId ?
                             (<div className={`${styles.flexContainer} ${styles.navIcon}`}>
                                 <div><NavLink to={`/profile/${userId}`}> <i className="fa-regular fa-user"></i> </NavLink></div>
-                                <div className='position-relative'>
-                                    <i className="fa-regular fa-heart"></i>
-                                    <span className="position-absolute top-0 translate-middle bg-danger  rounded-circle">
-                                        <span >10</span>
-                                    </span>
-                                </div>
-                                <div className='position-relative'>
-                                    <i className="fa-solid fa-shopping-cart "></i>
-                                    <span className="position-absolute top-0  translate-middle bg-danger  rounded-circle">
-                                        <span >10</span>
-                                    </span>
-                                </div>
+                                <NavLink to={"/WishlistPage"}>
+                            <div className="position-relative">
+                                <i className="fa-regular fa-heart"></i>
+                                <span className="position-absolute top-0 translate-middle bg-danger  rounded-circle">
+                                    <span>10</span>
+                                </span>
+                            </div>
+                            </NavLink>
+                            <NavLink to={"/CartPage"}>
+                            <div className="position-relative">
+                                <i className="fa-solid fa-shopping-cart "></i>
+                                <span className="position-absolute top-0  translate-middle bg-danger  rounded-circle">
+                                    <span>10</span>
+                                </span>
+                            </div>
+                            </NavLink>
                             </div>) :
                             (<div className={`${styles.flexContainer} ${styles.navIcon}`}>
                                 <div><NavLink to={`/login`} className={styles.loginBtns}> login </NavLink></div>

@@ -22,7 +22,7 @@ const CheckoutCart = ({ shippingCost, img, onCartIdChange, order, cartProduct })
             // setCartId(res.data._id)
             cartProduct(res.data.cartItems)
             onCartIdChange(res.data._id)
-            console.log(res.data)
+            console.log("carttt", res.data._id)
         },
         onError: (error) => {
             console.log(error)
