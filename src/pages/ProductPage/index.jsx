@@ -5,22 +5,32 @@ import ProductTabs from '../../components/ProductPage/ProductTabs';
 import styles from './productPage.module.css';
 import ProductSlider from '../../components/slider/productSlider';
 import ProductCard from "../../components/productCard/ProductCard";
+import { useParams } from 'react-router-dom';
 
 
 
 const ProductPage = () => {
-    const [products, setProducts] = useState([]);
+    const { id } = useParams();
+    const [products, setProducts] = useState({});
     const fetchProducts = async () => {
-        const response = await axios.get("http://localhost:3000/api/v1/products");
-        const data = await response.data.data.documents;
-        console.log(response.data.data.documents);
+        const response = await axios.get(`http://localhost:3000/api/v1/products/${id}`);
+
+        const data = await response.data.data;
+        console.log(response.data);
+        console.log("response", response);
         setProducts(data);
-        console.log(products);
+        console.log("products", products);
     };
+
+
+
+
+
     useEffect(() => {
         fetchProducts();
 
     }, []);
+
     return (
         <div className="container my-5">
             <div className="row">
@@ -43,23 +53,20 @@ const ProductPage = () => {
 
             <div className="row img-fluid">
                 <div className={`container ${styles.productsCollection}`}>
-                    {products.map(
-                        (product, i) =>
-                            i < 4 && (
-                                <div className={styles.productSellerContainer}>
-                                    <ProductCard
-                                        key={product._id}
-                                        _id={product._id}
-                                        className={styles.product}
-                                        title={product.title}
-                                        price={Math.round(product.price)}
-                                        rate={Math.round(product.rating)}
-                                        img={product.imageCover}
-                                    />
-                                </div>
 
-                            )
-                    )}
+                    <div className={styles.productSellerContainer}>
+                        <ProductCard
+                            id={products._id}
+                            className={styles.product}
+                            title={products.title}
+                            price={Math.round(products.price)}
+                            rate={Math.round(products.rating)}
+                            img={products.imageCover}
+                        />
+                    </div>
+
+
+
                 </div>
             </div>
 

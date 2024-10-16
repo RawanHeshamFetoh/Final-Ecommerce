@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 const ProductDetails = () => {
     const [quantity, setQuantity] = useState(1); // Initialize quantity state
-    const { _id } = useParams(); // Get product id from the URL
+    const { id } = useParams(); // Get product id from the URL
     const [product, setProduct] = useState(null); // State to store the specific product
     const [loading, setLoading] = useState(true); // Loading state
     const [error, setError] = useState(null); // Error state
@@ -67,7 +67,7 @@ const ProductDetails = () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:3000/api/v1/products/${_id}`
+                `http://localhost:3000/api/v1/products/${id}`
             );
             const data = response.data.data;
             setProduct(data);
@@ -82,7 +82,7 @@ const ProductDetails = () => {
     // Fetch product when component mounts and when the _id changes
     useEffect(() => {
         fetchProduct();
-    }, [_id]);
+    }, [id]);
 
     // Show loading or error states
     if (loading) {

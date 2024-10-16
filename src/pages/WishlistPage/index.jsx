@@ -68,7 +68,7 @@ const WishlistPage = () => {
                         products.map((product) => (
                             <div key={product._id} className={`col-md-3 ${styles.productSellerContainer}`}>
                                 <ProductCard
-                                    _id={product._id}
+                                    id={product._id}
                                     className={styles.product}
                                     title={product.title}
                                     price={Math.round(product.price)}

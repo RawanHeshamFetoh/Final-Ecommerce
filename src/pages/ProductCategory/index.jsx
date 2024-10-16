@@ -142,7 +142,7 @@ const ProductCategory = () => {
                                                 className={styles.productSellerContainer}
                                             >
                                                 <ProductCard
-                                                    _id={product._id}
+                                                    id={product._id}
                                                     className={styles.product}
                                                     title={product.title}
                                                     price={Math.round(product.price)}

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateShippingCost, updateTotalCartPrice } from '../../redux/cartSlice';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const CartSummary = () => {
     const { totalCartPrice, shippingCost, total } = useSelector((state) => state.cart);
@@ -9,6 +10,11 @@ const CartSummary = () => {
 
     const handleShippingChange = (e) => {
         dispatch(updateShippingCost(Number(e.target.value)));
+    };
+
+    const navigate = useNavigate();
+    const navigateToCheckout = () => {
+        navigate("/checkout");
     };
 
 
@@ -50,11 +56,15 @@ const CartSummary = () => {
                 </div>
             </p>
             <p>Total Price: <strong>$ {total}</strong></p>
-            <button className="btn text-white" style={{
+            
+            <button
+            onClick={navigateToCheckout}
+            className="btn text-white" style={{
                 backgroundColor: "#EF9E86",
                 borderRadius: "5px",
             }}>Proceed to Checkout</button>
         </div>
+        
     );
 };
 

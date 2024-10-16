@@ -8,7 +8,7 @@ import CheckoutCart from '../../components/checkoutCart/CheckoutCart'
 import axios from 'axios'
 import { useMutation } from 'react-query'
 import toast from 'react-hot-toast'
-import {loadStripe} from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 const Checkout = () => {
     // shippingAddress: {
     //     details: String,
@@ -17,12 +17,12 @@ const Checkout = () => {
     //     postalCode: String,
     //   },
     const [cartId, setCartId] = useState(0);
-    const [products , setProducts]= useState([])
+    const [products, setProducts] = useState([])
 
     const handleCartId = (id) => {
         setCartId(id);
     };
-    const handleCartProducts =(products)=>{
+    const handleCartProducts = (products) => {
         setProducts(products)
     }
 
@@ -157,9 +157,9 @@ const Checkout = () => {
             city: "",
             postalCode: "",
         },
-        shippingPrice:"",
+        shippingPrice: "",
         copon: '',
-        paymentMethodType:''
+        paymentMethodType: ''
     }
     const validationSchema = Yup.object({
         shippingAddress: Yup.object({
@@ -169,39 +169,40 @@ const Checkout = () => {
             postalCode: Yup.number().required("Required").min(10000, ' Zip code must be 5 number')
                 .max(99999, ' Zip code must be 5 number'),
         }),
-        paymentMethodType:Yup.string().required("Required"),
+        paymentMethodType: Yup.string().required("Required"),
 
     })
     const onSubmit = (values) => {
-        const updatedValue={...values,
-            shippingPrice:shippingCost
+        const updatedValue = {
+            ...values,
+            shippingPrice: shippingCost
         }
-        if(values.paymentMethodType === 'cash' || !values.paymentMethodType){
+        if (values.paymentMethodType === 'cash' || !values.paymentMethodType) {
             mutation.mutate(updatedValue)
             console.log(updatedValue)
         }
-        if(values.paymentMethodType=== 'card'){
+        if (values.paymentMethodType === 'card') {
             cardMutation.mutate(products)
         }
     }
-    const handlecheckoutWithCash=async(data)=>{
-        const respone = await axios.post(`http://localhost:3000/api/v1/orders/${cartId}`,data,{
+    const handlecheckoutWithCash = async (data) => {
+        const respone = await axios.post(`http://localhost:3000/api/v1/orders/${cartId}`, data, {
             withCredentials: true,
         })
         return respone.data
     }
-    const mutation = useMutation(handlecheckoutWithCash,{
-        onSuccess:()=>{
+    const mutation = useMutation(handlecheckoutWithCash, {
+        onSuccess: () => {
             toast.success('your order is under processing')
         },
-        onError:()=>{
+        onError: () => {
             toast.error('something went wrong')
         }
     })
     // const cardPayment = async()=>{
     //     const stripe = await loadStripe('pk_test_51Q2apNRtt1tTdQQg9PbuS24EiGLRAV4z2eiCASEaT0ndTU0QTnijANIdr2R0Vv9mVfy9SGhNtP61h1DmQPLIvcim000xtDAbr2');
     // }
-    console.log(products,"checkoutP")
+    console.log(products, "checkoutP")
     // {
     //     "shipping_price":100,
     //     "line_items":[
@@ -221,38 +222,64 @@ const Checkout = () => {
     //     }
     //     ]
     // }
-    
+
     // console.log(bodydata,"bodydata")
-    const handlecheckoutWithCard = async(products)=>{
+
+
+    const data = {
+        shipping_price: shippingCost,
+        line_items: products.map((product) => ({
+            title: product.product.title,
+            description: product.product.description,
+            price: product.price,
+            quantity: product.quantity,
+            imageCover: product.product.imageCover
+
+        }))
+    }
+    console.log("bodydata", data)
+
+
+
+
+    const handlecheckoutWithCard = async (products) => {
         // const body = { products };
-        const bodydata ={
-            shipping_price:shippingCost,
-            line_items:products.map((product)=>({
-                title:product.product.title,
-                description:product.product.description,
-                price: product.price,
-                quantity:product.quantity,
-                imageCover:product.product.imageCover
-    
-            }))
-        } 
-        const response = await axios.post(`http://localhost:3000/api/v1/orders/checkout-session/${cartId}`,bodydata,{
+
+        
+    const bodydata = {
+        shipping_price: shippingCost,
+        line_items: products.map((product) => ({
+            title: product.product.title,
+            description: product.product.description,
+            price: product.price,
+            quantity: product.quantity,
+            imageCover: product.product.imageCover
+
+        }))
+    }
+
+        const response = await axios.post(`http://localhost:3000/api/v1/orders/checkout-session/${cartId}`, bodydata, {
             withCredentials: true,
-            headers:{
+            headers: {
                 "Content-Type": "application/json"
             }
-        
+
         })
         console.log(response)
         return response.data
+
     }
-    const cardMutation = useMutation(handlecheckoutWithCard,{
-        onSuccess:async(res)=>{
-        const stripe = await loadStripe('pk_test_51Q2apNRtt1tTdQQg9PbuS24EiGLRAV4z2eiCASEaT0ndTU0QTnijANIdr2R0Vv9mVfy9SGhNtP61h1DmQPLIvcim000xtDAbr2');
-        const result =await stripe.redirectToCheckout({ sessionId: res.session.id});
+
+
+
+    console.log("checkoutId", cartId)
+    const cardMutation = useMutation(handlecheckoutWithCard, {
+        onSuccess: async (res) => {
+            const stripe = await loadStripe('pk_test_51Q2apNRtt1tTdQQg9PbuS24EiGLRAV4z2eiCASEaT0ndTU0QTnijANIdr2R0Vv9mVfy9SGhNtP61h1DmQPLIvcim000xtDAbr2');
+            const result = await stripe.redirectToCheckout({ sessionId: res.session.id });
             toast.success('your order is under processing')
         },
-        onError:(err)=>{
+        onError: (err) => {
             // console.log(err)
             toast.error('something went wrong')
         }
@@ -276,24 +303,24 @@ const Checkout = () => {
     //     })
     // }
     //applay copon
-    const applayCopon = async(copon)=>{
-        
-        const response = await axios.put(`http://localhost:3000/api/v1/cart/applyCoupon`,copon,{
+    const applayCopon = async (copon) => {
+
+        const response = await axios.put(`http://localhost:3000/api/v1/cart/applyCoupon`, copon, {
             withCredentials: true,
         })
         return response.data;
     }
-    const coponMutation = useMutation(applayCopon,{
-        onSuccess:(res)=>{
-            console.log(res.data,"cooooooooo")
+    const coponMutation = useMutation(applayCopon, {
+        onSuccess: (res) => {
+            console.log(res.data, "cooooooooo")
             toast.success('your coupon is applied successfully')
         },
-        onError:()=>{
+        onError: () => {
             toast.error('something went wrong')
         }
     })
-    const handleApplayCopon =(copon)=>{
-        let data = {coupon:copon}
+    const handleApplayCopon = (copon) => {
+        let data = { coupon: copon }
         coponMutation.mutate(data)
     }
 
@@ -303,7 +330,7 @@ const Checkout = () => {
         <div className={` ${style.checkout}`}>
             <h3>billing details</h3>
             <div>
-                
+
                 <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
                     {
                         formik => {
@@ -361,7 +388,7 @@ const Checkout = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <CheckoutCart shippingCost={shippingCost} img={require('../../assets/pr11.png')} onCartIdChange={handleCartId} order={false} cartProduct={handleCartProducts}/>
+                                        <CheckoutCart shippingCost={shippingCost} img={require('../../assets/pr11.png')} onCartIdChange={handleCartId} order={false} cartProduct={handleCartProducts} />
                                         <div>
                                             <FormController
                                                 control='radio'
@@ -378,9 +405,9 @@ const Checkout = () => {
                                                 name="copon"
                                                 placeholder="copon"
                                                 className={styles.input}
-                                                
+
                                             />
-                                            <button type='button' className={styles.submit} onClick={()=>handleApplayCopon(formik.values.copon)}>applay copon {formik.values.copon}</button>
+                                            <button type='button' className={styles.submit} onClick={() => handleApplayCopon(formik.values.copon)}>applay copon {formik.values.copon}</button>
                                         </div>
 
                                         <button type="submit" className={styles.submit}>checkout</button>

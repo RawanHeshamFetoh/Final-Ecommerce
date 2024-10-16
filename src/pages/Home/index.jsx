@@ -116,7 +116,7 @@ const Home = () => {
           products.map((product, i) => (
             (i < 8) && (
               <div className={styles.productSellerContainer}>
-                <ProductCard key={product._id} _id={product._id} className={styles.product} title={product.title} price={Math.round(product.price)} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
+                <ProductCard key={product._id} id={product._id} className={styles.product} title={product.title} price={Math.round(product.price)} rate={product.ratingsAverage} img={product.imageCover} priceAfterDisc={product.priceAfterDisc} />
               </div>
             )
           ))

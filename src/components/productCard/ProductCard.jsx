@@ -6,9 +6,9 @@ import Cookies from "js-cookie";
 import { useMutation } from "react-query";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-const ProductCard = ({ img, title, price, rate, priceAfterDisc, _id, onAddToWishlist, color }) => {
+const ProductCard = ({ img, title, price, rate, priceAfterDisc, id, onAddToWishlist, color }) => {
     const productIem = {
-        productId: _id,
+        productId: id,
         color: color,
     };
     const handleAddCartItem = async (product) => {
@@ -45,7 +45,7 @@ const ProductCard = ({ img, title, price, rate, priceAfterDisc, _id, onAddToWish
                         <button onClick={handleAddToCart}>
                             add to cart <i class="fa-solid fa-arrow-right"></i>
                         </button>
-                        <Link to={`/ProductPage/${_id}`}>
+                        <Link to={`/ProductPage/${id}`}>
                             <button>
                                 view product <i className="fa-regular fa-eye"></i>
                             </button>
